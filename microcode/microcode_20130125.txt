@@ -1,0 +1,2868 @@
+//
+// BYTEC/16 CPU Microcode v1.4 (January 25, 2013)
+// Copyright (C) 2009, 2010, 2011, 2012, 2013 Dawid Pilawa
+//
+
+//
+// fetch is alias for "CODE; IR <- MEM(PC); PC++"
+//
+
+
+// NOP
+// no operation; fetch next instruction
+op($00)
+    0, *, fetch
+endop
+
+// HALT
+// halt the machine; fetch self
+op($01)
+    0, *, MDR <- PC
+    1, *, PC <- MDR - 1
+    2, *, fetch
+endop
+
+// MOV A, X
+// copy X to A
+op($02)
+    0, *, A <- X; fetch
+endop
+
+// MOV A, Y
+// copy Y to A
+op($03)
+    0, *, A <- Y; fetch
+endop
+
+// MOV A, SP
+// copy SP to A
+op($04)
+    0, *, A <- SP
+    1, *, fetch
+endop
+
+// MOV A, DP // copy DP to A
+op($05)
+    0, *, A <- DP;
+    1, *, fetch
+endop
+
+// MOV X, A
+// copy A to X
+op($06)
+    0, *, X <- A; fetch
+endop
+
+// MOV X, Y
+// copy Y to X
+op($07)
+    0, *, X <- Y; fetch
+endop
+
+// MOV Y, A
+// copy A to Y
+op($08)
+    0, *, Y <- A; fetch
+endop
+
+// MOV Y, X
+// copy X to Y
+op($09)
+    0, *, Y <- X; fetch
+endop
+
+// MOV SP, A
+// copy A to SP
+op($0A)
+    0, *, SP <- A; fetch
+endop
+
+// MOV DP, A
+// copy A to DP
+op($0B)
+    0, *, DP <- A; fetch
+endop
+
+// MOV AL, MSW
+// copy machine status word to low byte of A
+op($0C)
+    0, *, LO(A) <- MSW; fetch
+endop
+
+// MOV MSW, AL
+// copy low byte of A to machine status word
+op($0D)
+    0, *, MSW <- A; SUPERVISOR; fetch   // only low byte of A is loaded here
+endop
+
+// MOVL AL, X
+// copy low byte of X to AL
+op($0E)
+    0, *, LO(A) <- X; fetch
+endop
+
+// MOVL AL, Y
+// copy low byte of Y to AL
+op($0F)
+    0, *, LO(A) <- Y; fetch
+endop
+
+// PUSH A
+// push A to stack
+op($10)
+    0, *, SP--
+    1, *, MEM(SP) <- LO(A); DATA; SP--
+    2, *, MEM(SP) <- HI(A); DATA
+    3, *, fetch
+endop
+
+// PUSH X
+// push X to stack
+op($11)
+    0, *, SP--
+    1, *, MEM(SP) <- LO(X); DATA; SP--
+    2, *, MEM(SP) <- HI(X); DATA
+    3, *, fetch
+endop
+
+// PUSH Y
+// push Y to stack
+op($12)
+    0, *, SP--
+    1, *, MEM(SP) <- LO(Y); DATA; SP--
+    2, *, MEM(SP) <- HI(Y); DATA
+    3, *, fetch
+endop
+
+// PUSH AH
+// push high byte of A to stack
+op($13)
+    0, *, SP--
+    1, *, MEM(SP) <- HI(A); DATA
+    2, *, fetch
+endop
+
+// PUSH AL
+// push low byte of A to stack
+op($14)
+    0, *, SP--
+    1, *, MEM(SP) <- LO(A); DATA
+    2, *, fetch
+endop
+
+// PUSH SP
+// push SP to stack
+op($15)
+    0, *, MDR <- SP; SP--
+    1, *, MEM(SP) <- LO(MDR); DATA; SP--
+    2, *, MEM(SP) <- HI(MDR); DATA
+    3, *, fetch
+endop
+
+// PUSH DP
+// push DP to stack
+op($16)
+    0, *, MDR <- DP; SP--
+    1, *, MEM(SP) <- LO(MDR); DATA; SP--
+    2, *, MEM(SP) <- HI(MDR); DATA
+    3, *, fetch
+endop
+
+// PUSH PC
+// push PC to stack
+op($17)
+    0, *, MDR <- PC; SP--
+    1, *, MEM(SP) <- LO(MDR); DATA; SP--
+    2, *, MEM(SP) <- HI(MDR); DATA
+    3, *, fetch
+endop
+
+// POP A
+// pop A from stack
+op($18)
+    0, *, HI(A) <- MEM(SP); DATA; SP++
+    1, *, LO(A) <- MEM(SP); DATA; SP++
+    2, *, fetch
+endop
+
+// POP X
+// pop X from stack
+op($19)
+    0, *, HI(MDR) <- MEM(SP); DATA; SP++
+    1, *, LO(MDR) <- MEM(SP); DATA; SP++
+    2, *, X <- MDR; fetch
+endop
+
+// POP Y
+// pop Y from stack
+op($1A)
+    0, *, HI(MDR) <- MEM(SP); DATA; SP++
+    1, *, LO(MDR) <- MEM(SP); DATA; SP++
+    2, *, Y <- MDR; fetch
+endop
+
+// POP AH
+// pop high byte of A from stack
+op($1B)
+    0, *, HI(A) <- MEM(SP); SP++; DATA
+    1, *, fetch
+endop
+
+// POP AL
+// pop low byte of A from stack
+op($1C)
+    0, *, LO(A) <- MEM(SP); SP++; DATA
+    1, *, fetch
+endop
+
+// POP SP
+// pop SP from stack
+op($1D)
+    0, *, HI(MDR) <- MEM(SP); DATA; SP++
+    1, *, LO(MDR) <- MEM(SP); DATA; SP++
+    2, *, SP <- MDR; fetch
+endop
+
+// POP DP
+// pop DP from stack
+op($1E)
+    0, *, HI(MDR) <- MEM(SP); DATA; SP++
+    1, *, LO(MDR) <- MEM(SP); DATA; SP++
+    2, *, DP <- MDR; fetch
+endop
+
+// POP PC
+// pop PC from stack
+op($1F)
+    0, *, HI(MDR) <- MEM(SP); DATA; SP++
+    1, *, LO(MDR) <- MEM(SP); DATA; SP++
+    2, *, PC <- MDR;
+    3, *, fetch
+endop
+
+// JMP #i16
+// unconditional jump (offset relative to PC)
+op($20)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// CALL #i16
+// push program counter to stack and jump to subroutine (offset relative to PC)
+op($21)
+    0, *, HI(MAR) <- MEM(PC); CODE; PC++
+    1, *, LO(MAR) <- MEM(PC); CODE; PC++
+    2, *, MDR <- PC; SP--
+    3, *, MEM(SP) <- LO(MDR); DATA; SP--
+    4, *, MEM(SP) <- HI(MDR); DATA
+    5, *, PC <- MDR + MAR
+    6, *, fetch
+endop
+
+// RET
+// return from subroutine (pop program counter from stack)
+op($22)
+    0, *, HI(MDR) <- MEM(SP); DATA; SP++
+    1, *, LO(MDR) <- MEM(SP); DATA; SP++
+    2, *, PC <- MDR
+    3, *, fetch
+endop
+
+// IRET
+// return from interrupt
+op($23)
+    0, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore PC
+    1, *,  LO(MDR) <- MEM(SP); DATA; SP++
+    2, *,  PC <- MDR
+    3, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore DP
+    4, *,  LO(MDR) <- MEM(SP); DATA; SP++
+    5, *,  DP <- MDR
+    6, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore Y
+    7, *,  LO(MDR) <- MEM(SP); DATA; SP++
+    8, *,  Y <- MDR
+    9, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore X
+    10, *, LO(MDR) <- MEM(SP); DATA; SP++
+    11, *, X <- MDR
+    12, *, HI(A) <- MEM(SP); DATA; SP++           // restore A
+    13, *, LO(A) <- MEM(SP); DATA; SP++
+    14, *, HI(MAR) <- MEM(SP); DATA; SP++         // restore SP value (but not yet set SP)
+    15, *, LO(MAR) <- MEM(SP); DATA; SP++
+    16, *, LO(MDR) <- MEM(SP); DATA; SP++         // restore MSW value (but not yet set MSW)
+    17, *, MSW <- MDR                             // restore machine status word (CPU mode, etc.)
+    18, *, SP <- MAR                              // restore stack pointer (KSP or USP here, depending on CPU mode)
+    19, *, fetch                                  // fetch
+endop
+
+// CALL (SP)
+// push program counter to stack and jump to subroutine address on previous top of the stack
+op($24)
+    0, *, MAR <- SP;
+    1, *, MDR <- PC; SP--
+    2, *, MEM(SP) <- LO(MDR); DATA; SP--
+    3, *, MEM(SP) <- HI(MDR); DATA
+    4, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    5, *, LO(MDR) <- MEM(MAR); DATA
+    6, *, PC <- MDR
+    7, *, fetch
+endop
+
+// LD A, #i16
+// load A with 16-bit immediate
+op($25)
+    0, *, HI(A) <- MEM(PC); CODE; PC++
+    1, *, LO(A) <- MEM(PC); CODE; PC++
+    2, *, fetch
+endop
+
+// LD A, (SP:#i8)
+// load A with memory at address in SP plus 8-bit signed offset
+op($26)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(A) <- MEM(MAR); DATA; MAR++
+    3, *, LO(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD A, (SP:#i16)
+// load A with memory at address in SP plus 16-bit signed offset
+op($27)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(A) <- MEM(MAR); DATA; MAR++
+    4, *, LO(A) <- MEM(MAR); DATA
+    5, *, fetch
+endop
+
+// LD A, (DP:#i16)
+// load A with memory at address in DP plus 16-bit signed offset
+op($28)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(A) <- MEM(MAR); DATA; MAR++
+    4, *, LO(A) <- MEM(MAR); DATA
+    5, *, fetch
+endop
+
+// LD A, (A:#i16)
+// load A with memory at address in A plus 16-bit signed offset
+op($29)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(A) <- MEM(MAR); DATA; MAR++
+    4, *, LO(A) <- MEM(MAR); DATA
+    5, *, fetch
+endop
+
+// LD A, (X:#i16)
+// load A with memory at address in X plus 16-bit signed offset
+op($2A)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(A) <- MEM(MAR); DATA; MAR++
+    4, *, LO(A) <- MEM(MAR); DATA
+    5, *, fetch
+endop
+
+// LD A, (Y:#i16)
+// load A with memory at address in Y plus 16-bit signed offset
+op($2B)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(A) <- MEM(MAR); DATA; MAR++
+    4, *, LO(A) <- MEM(MAR); DATA
+    5, *, fetch
+endop
+
+// LD X, #i16
+// load X with 16-bit immediate
+op($2C)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, X <- MDR; fetch
+endop
+
+// LD X, (SP:#i8)
+// load X with memory at address in SP plus 8-bit signed offset
+op($2D)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, X <- MDR; fetch
+endop
+
+// LD X, (SP:#i16)
+// load X with memory at address in SP plus 16-bit signed offset
+op($2E)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- MDR; fetch
+endop
+
+// LD X, (DP:#i16)
+// load X with memory at address in DP plus 16-bit signed offset
+op($2F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- MDR; fetch
+endop
+
+// LD X, (A:#i16)
+// load X with memory at address in A plus 16-bit signed offset
+op($30)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- MDR; fetch
+endop
+
+// LD X, (X:#i16)
+// load X with memory at address in X plus 16-bit signed offset
+op($31)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- MDR; fetch
+endop
+
+// LD X, (Y:#i16)
+// load X with memory at address in Y plus 16-bit signed offset
+op($32)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- MDR; fetch
+endop
+
+// LD Y, #i16
+// load Y with 16-bit immediate
+op($33)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, Y <- MDR; fetch
+endop
+
+// LD Y, (SP:#i8)
+// load Y with memory at address in SP plus 8-bit signed offset
+op($34)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, Y <- MDR; fetch
+endop
+
+// LD Y, (SP:#i16)
+// load Y with memory at address in SP plus 16-bit signed offset
+op($35)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (DP:#i16)
+// load Y with memory at address in DP plus 16-bit signed offset
+op($36)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (A:#i16)
+// load Y with memory at address in A plus 16-bit signed offset
+op($37)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (X:#i16)
+// load Y with memory at address in X plus 16-bit signed offset
+op($38)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (Y:#i16)
+// load Y with memory at address in Y plus 16-bit signed offset
+op($39)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- MDR; fetch
+endop
+
+// LD AH, #i8
+// load low byte of A with 8-bit immediate
+op($3A)
+    0, *, HI(A) <- MEM(PC); CODE; PC++
+    1, *, fetch
+endop
+
+// LD AL, #i8
+// load high byte of A with 8-bit immediate
+op($3B)
+    0, *, LO(A) <- MEM(PC); CODE; PC++
+    1, *, fetch
+endop
+
+// LD AH, (SP:#i8)
+// load high byte of A with memory at address in SP plus 8-bit signed offset
+op($3C)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(A) <- MEM(MAR); DATA
+    3, *, fetch
+endop
+
+// LD AL, (SP:#i8) // load low byte of A with memory at address in SP plus 8-bit signed offset
+op($3D)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, LO(A) <- MEM(MAR); DATA
+    3, *, fetch
+endop
+
+// LD AH, (SP:#i16)
+// load high byte of A with memory at address in SP plus 16-bit signed offset
+op($3E)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD AL, (SP:#i16)
+// load low byte of A with memory at address in SP plus 16-bit signed offset
+op($3F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, LO(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD AH, (DP:#i16)
+// load high byte of A with memory at address in DP plus 16-bit signed offset
+op($40)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD AL, (DP:#i16)
+// load low byte of A with memory at address in DP plus 16-bit signed offset
+op($41)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, LO(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD AH, (X:#i16)
+// load high byte of A with memory at address in X plus 16-bit signed offset
+op($42)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD AL, (X:#i16)
+// load low byte of A with memory at address in X plus 16-bit signed offset
+op($43)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, LO(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD AH, (Y:#i16) // load high byte of A with memory at address in Y plus 16-bit signed offset
+op($44)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// LD AL, (Y:#i16) // load low byte of A with memory at address in Y plus 16-bit signed offset
+op($45)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, LO(A) <- MEM(MAR); DATA
+    4, *, fetch
+endop
+
+// ST (SP:#i8), A
+// store A in memory at address in SP plus 8-bit signed offset
+op($46)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, MEM(MAR) <- HI(A); DATA; MAR++
+    3, *, MEM(MAR) <- LO(A); DATA
+    4, *, fetch
+endop
+
+// ST (SP:#i16), A
+// store A in memory at address in SP plus 16-bit signed offset
+op($47)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MEM(MAR) <- HI(A); DATA; MAR++
+    4, *, MEM(MAR) <- LO(A); DATA
+    5, *, fetch
+endop
+
+// ST (DP:#i16), A
+// store A in memory at address in DP plus 16-bit signed offset
+op($48)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MEM(MAR) <- HI(A); DATA; MAR++
+    4, *, MEM(MAR) <- LO(A); DATA
+    5, *, fetch
+endop
+
+// ST (A:#i16), A
+// store A in memory at address in A plus 16-bit signed offset
+op($49)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, MEM(MAR) <- HI(A); DATA; MAR++
+    4, *, MEM(MAR) <- LO(A); DATA
+    5, *, fetch
+endop
+
+// ST (X:#i16), A
+// store A in memory at address in X plus 16-bit signed offset
+op($4A)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, MEM(MAR) <- HI(A); DATA; MAR++
+    4, *, MEM(MAR) <- LO(A); DATA
+    5, *, fetch
+endop
+
+// ST (Y:#i16), A
+// store A in memory at address in Y plus 16-bit signed offset
+op($4B)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, MEM(MAR) <- HI(A); DATA; MAR++
+    4, *, MEM(MAR) <- LO(A); DATA
+    5, *, fetch
+endop
+
+// ST (SP:#i8), X
+// store X in memory at address in SP plus 8-bit signed offset
+op($4C)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, MEM(MAR) <- HI(X); DATA; MAR++
+    3, *, MEM(MAR) <- LO(X); DATA
+    4, *, fetch
+endop
+
+// ST (SP:#i16), X
+// store X in memory at address in SP plus 16-bit signed offset
+op($4D)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MEM(MAR) <- HI(X); DATA; MAR++
+    4, *, MEM(MAR) <- LO(X); DATA
+    5, *, fetch
+endop
+
+// ST (DP:#i16), X
+// store X in memory at address in DP plus 16-bit signed offset
+op($4E)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MEM(MAR) <- HI(X); DATA; MAR++
+    4, *, MEM(MAR) <- LO(X); DATA
+    5, *, fetch
+endop
+
+// ST (A:#i16), X
+// store X in memory at address in A plus 16-bit signed offset
+op($4F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, MEM(MAR) <- HI(X); DATA; MAR++
+    4, *, MEM(MAR) <- LO(X); DATA
+    5, *, fetch
+endop
+
+// ST (X:#i16), X
+// store X in memory at address in X plus 16-bit signed offset
+op($50)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, MEM(MAR) <- HI(X); DATA; MAR++
+    4, *, MEM(MAR) <- LO(X); DATA
+    5, *, fetch
+endop
+
+// ST (Y:#i16), X
+// store X in memory at address in Y plus 16-bit signed offset
+op($51)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, MEM(MAR) <- HI(X); DATA; MAR++
+    4, *, MEM(MAR) <- LO(X); DATA
+    5, *, fetch
+endop
+
+// ST (SP:#i8), Y
+// store Y in memory at address in SP plus 8-bit signed offset
+op($52)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, MEM(MAR) <- HI(Y); DATA; MAR++
+    3, *, MEM(MAR) <- LO(Y); DATA
+    4, *, fetch
+endop
+
+// ST (SP:#i16), Y
+// store Y in memory at address in SP plus 16-bit signed offset
+op($53)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MEM(MAR) <- HI(Y); DATA; MAR++
+    4, *, MEM(MAR) <- LO(Y); DATA
+    5, *, fetch
+endop
+
+// ST (DP:#i16), Y
+// store Y in memory at address in DP plus 16-bit signed offset
+op($54)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MEM(MAR) <- HI(Y); DATA; MAR++
+    4, *, MEM(MAR) <- LO(Y); DATA
+    5, *, fetch
+endop
+
+// ST (A:#i16), Y
+// store Y in memory at address in A plus 16-bit signed offset
+op($55)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, MEM(MAR) <- HI(Y); DATA; MAR++
+    4, *, MEM(MAR) <- LO(Y); DATA
+    5, *, fetch
+endop
+
+// ST (X:#i16), Y
+// store Y in memory at address in X plus 16-bit signed offset
+op($56)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, MEM(MAR) <- HI(Y); DATA; MAR++
+    4, *, MEM(MAR) <- LO(Y); DATA
+    5, *, fetch
+endop
+
+// ST (Y:#i16), Y
+// store Y in memory at address in Y plus 16-bit signed offset
+op($57)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, MEM(MAR) <- HI(Y); DATA; MAR++
+    4, *, MEM(MAR) <- LO(Y); DATA
+    5, *, fetch
+endop
+
+// ST (SP:#i8), AH
+// store high byte of A at address in SP plus 8-bit signed offset
+op($58)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, MEM(MAR) <- HI(A); DATA
+    3, *, fetch
+endop
+
+// ST (SP:#i8), AL
+// store low byte of A at address in SP plus 8-bit signed offset
+op($59)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, MEM(MAR) <- LO(A); DATA
+    3, *, fetch
+endop
+
+// ST (SP:#i16), AH
+// store high byte of A at address in SP plus 16-bit signed offset
+op($5A)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MEM(MAR) <- HI(A); DATA
+    4, *, fetch
+endop
+
+// ST (SP:#i16), AL
+// store low byte of A at address in SP plus 16-bit signed offset
+op($5B)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MEM(MAR) <- LO(A); DATA
+    4, *, fetch
+endop
+
+// ST (DP:#i16), AH
+// store high byte of A at address in DP plus 16-bit signed offset
+op($5C)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MEM(MAR) <- HI(A); DATA
+    4, *, fetch
+endop
+
+// ST (DP:#i16), AL
+// store low byte of A at address in DP plus 16-bit signed offset
+op($5D)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MEM(MAR) <- LO(A); DATA
+    4, *, fetch
+endop
+
+// ST (X:#i16), AH
+// store high byte of A at address in X plus 16-bit signed offset
+op($5E)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, MEM(MAR) <- HI(A); DATA
+    4, *, fetch
+endop
+
+// ST (X:#i16), AL
+// store low byte of A at address in X plus 16-bit signed offset
+op($5F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, MEM(MAR) <- LO(A); DATA
+    4, *, fetch
+endop
+
+// ST (Y:#i16), AH
+// store high byte of A at address in Y plus 16-bit signed offset
+op($60)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, MEM(MAR) <- HI(A); DATA
+    4, *, fetch
+endop
+
+// ST (Y:#i16), AL
+// store low byte of A at address in Y plus 16-bit signed offset
+op($61)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, MEM(MAR) <- LO(A); DATA
+    4, *, fetch
+endop
+
+// ADD A, #i16
+// add 16-bit signed immediate to A
+op($62)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, X
+// add X to A
+op($63)
+    0, *, MDR <- X
+    1, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, Y
+// add Y to A
+op($64)
+    0, *, MDR <- Y
+    1, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (SP:#i8)
+// add memory at address in SP plus 8-bit signed offset to A
+op($65)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (SP:#i16)
+// add memory at address in SP plus 16-bit signed offset to A
+op($66)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (DP:#i16)
+// add memory at address in DP plus 16-bit signed offset to A
+op($67)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (A:#i16)
+// add memory at address in A plus 16-bit signed offset to A
+op($68)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (X:#i16)
+// add memory at address in X plus 16-bit signed offset to A
+op($69)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (Y:#i16)
+// add memory at address in Y plus 16-bit signed offset to A
+op($6A)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, #i16
+// add 16-bit signed immediate to X
+op($6B)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, A
+// add A to X
+op($6C)
+    0, *, MDR <- A
+    1, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, Y
+// add Y to X
+op($6D)
+    0, *, MDR <- Y
+    1, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, (SP:#i8)
+// add memory at address in SP plus 8-bit signed offset to X
+op($6E)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, (SP:#i16)
+// add memory at address in SP plus 16-bit signed offset to X
+op($6F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, (DP:#i16)
+// add memory at address in DP plus 16-bit signed offset to X
+op($70)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, (A:#i16)
+// add memory at address in A plus 16-bit signed offset to X
+op($71)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, (X:#i16)
+// add memory at address in X plus 16-bit signed offset to X
+op($72)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD X, (Y:#i16)
+// add memory at address in Y plus 16-bit signed offset to X
+op($73)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, #i16
+// add 16-bit signed immediate to Y
+op($74)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, A
+// add A to Y
+op($75)
+    0, *, MDR <- A
+    1, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, X
+// add X to Y
+op($76)
+    0, *, MDR <- X
+    1, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, (SP:#i8)
+// add memory at address in SP plus 8-bit signed offset to Y
+op($77)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, (SP:#i16)
+// add memory at address in SP plus 16-bit signed offset to Y
+op($78)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, (DP:#i16)
+// add memory at address in DP plus 16-bit signed offset to Y
+op($79)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, (A:#i16)
+// add memory at address in A plus 16-bit signed offset to Y
+op($7A)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, (X:#i16)
+// add memory at address in X plus 16-bit signed offset to Y
+op($7B)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, (Y:#i16)
+// add memory at address in Y plus 16-bit signed offset to Y
+op($7C)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD AH, #i8
+// add 8-bit immediate to high byte of A
+op($7D)
+    0, *, MDR <- MDR ^ MDR
+    1, *, HI(MDR) <- MEM(PC); CODE; PC++
+    2, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AL, #i8
+// add 8-bit immediate to low byte of A
+op($7E)
+    0, *, LO(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADD AH, (SP:#i16)
+// add memory at address in SP plus 16-bit signed offset to high byte of A
+op($7F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AL, (SP:#i16)
+// add memory at address in SP plus 16-bit signed offset to low byte of A
+op($80)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADD AH, (DP:#i16)
+// add memory at address in DP plus 16-bit signed offset to high byte of A
+op($81)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AL, (DP:#i16)
+// add memory at address in DP plus 16-bit signed offset to low byte of A
+op($82)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADD AH, (X:#i16)
+// add memory at address in X plus 16-bit signed offset to high byte of A
+op($83)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AL, (X:#i16)
+// add memory at address in X plus 16-bit signed offset to low byte of A
+op($84)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADD AH, (Y:#i16)
+// add memory at address in Y plus 16-bit signed offset to high byte of A
+op($85)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AL, (Y:#i16)
+// add memory at address in Y plus 16-bit signed offset to low byte of A
+op($86)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB A, #i16
+// subtract 16-bit signed immediate from A
+op($87)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, X
+// subtract X from A
+op($88)
+    0, *, MDR <- X
+    1, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, Y
+// subtract Y from A
+op($89)
+    0, *, MDR <- Y
+    1, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (SP:#i8)
+// subtract memory at address in SP plus 8-bit signed offset from A
+op($8A)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (SP:#i16)
+// subtract memory at address in SP plus 16-bit signed offset from A
+op($8B)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (DP:#i16)
+// subtract memory at address in DP plus 16-bit signed offset from A
+op($8C)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (A:#i16)
+// subtract memory at address in A plus 16-bit signed offset from A
+op($8D)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (X:#i16)
+// subtract memory at address in X plus 16-bit signed offset from A
+op($8E)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (Y:#i16)
+// subtract memory at address in Y plus 16-bit signed offset from A
+op($8F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, #i16
+// subtract 16-bit signed immediate from X
+op($90)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, A
+// subtract A from X
+op($91)
+    0, *, MDR <- A
+    1, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, Y
+// subtract Y from X
+op($92)
+    0, *, MDR <- Y
+    1, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, (SP:#i8)
+// subtract memory at address in SP plus 8-bit signed offset from X
+op($93)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, (SP:#i16)
+// subtract memory at address in SP plus 16-bit signed offset from X
+op($94)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, (DP:#i16)
+// subtract memory at address in DP plus 16-bit signed offset from X
+op($95)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, (A:#i16)
+// subtract memory at address in A plus 16-bit signed offset from X
+op($96)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, (X:#i16)
+// subtract memory at address in X plus 16-bit signed offset from X
+op($97)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB X, (Y:#i16)
+// subtract memory at address in Y plus 16-bit signed offset from X
+op($98)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, X <- X - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, #i16
+// subtract 16-bit signed immediate from Y
+op($99)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, A
+// subtract A from Y
+op($9A)
+    0, *, MDR <- A
+    1, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, X
+// subtract X from Y
+op($9B)
+    0, *, MDR <- X
+    1, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, (SP:#i8)
+// subtract memory at address in SP plus 8-bit signed offset from Y
+op($9C)
+    0, *, MDR <- MEM(PC); CODE; PC++ // sign extended
+    1, *, MAR <- MDR + SP
+    2, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, (SP:#i16)
+// subtract memory at address in SP plus 16-bit signed offset from Y
+op($9D)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, (DP:#i16)
+// subtract memory at address in DP plus 16-bit signed offset from Y
+op($9E)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, (A:#i16)
+// subtract memory at address in A plus 16-bit signed offset from Y
+op($9F)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- A + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, (X:#i16)
+// subtract memory at address in X plus 16-bit signed offset from Y
+op($A0)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB Y, (Y:#i16)
+// subtract memory at address in Y plus 16-bit signed offset from Y
+op($A1)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, Y <- Y - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB AH, #i8
+// subtract 8-bit immediate from high byte of A
+op($A2)
+    0, *, MDR <- MDR ^ MDR
+    1, *, HI(MDR) <- MEM(PC); CODE; PC++
+    2, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AL, #i8
+// subtract 8-bit immediate from low byte of A
+op($A3)
+    0, *, LO(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB AH, (SP:#i16)
+// subtract memory at address in SP plus 16-bit signed offset from high byte of A
+op($A4)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AL, (SP:#i16)
+// subtract memory at address in SP plus 16-bit signed offset from low byte of A
+op($A5)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB AH, (DP:#i16)
+// subtract memory at address in DP plus 16-bit signed offset from high byte of A
+op($A6)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AL, (DP:#i16)
+// subtract memory at address in DP plus 16-bit signed offset from low byte of A
+op($A7)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB AH, (X:#i16)
+// subtract memory at address in X plus 16-bit signed offset from high byte of A
+op($A8)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AL, (X:#i16)
+// subtract memory at address in X plus 16-bit signed offset from low byte of A
+op($A9)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- X + MDR
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB AH, (Y:#i16)
+// subtract memory at address in Y plus 16-bit signed offset from high byte of A
+op($AA)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AL, (Y:#i16)
+// subtract memory at address in Y plus 16-bit signed offset from low byte of A
+op($AB)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- Y + MDR
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// AND A, #i16
+// bitwise AND on A and 16-bit immediate, result in A
+op($AC)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, X
+// bitwise AND on A and X, result in A
+op($AD)
+    0, *, MDR <- X
+    1, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, Y
+// bitwise AND on A and Y, result in A
+op($AE)
+    0, *, MDR <- Y
+    1, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, (SP:#i16)
+// bitwise AND on A and memory at address in SP plus 16-bit signed offset, result in A
+op($AF)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA; MAR++
+    5, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, (DP:#i16)
+// bitwise AND on A and memory at address in DP plus 16-bit signed offset, result in A
+op($B0)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA; MAR++
+    5, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND AH, #i8
+// bitwise AND on high byte of A and 8-bit immediate, result in low byte of A
+op($B1)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, HI(A) <- A & MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// AND AL, #i8
+// bitwise AND on low byte of A and 8-bit immediate, result in low byte of A
+op($B2)
+    0, *, LO(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(A) <- A & MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// AND AH, (SP:#i16)
+// bitwise AND on high byte of A and memory at address in SP plus 16-bit signed offset, result in high byte of A
+op($B3)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA
+    4, *, HI(A) <- A & MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// AND AL, (SP:#i16)
+// bitwise AND on low byte of A and memory at address in SP plus 16-bit signed offset, result in low byte of A
+op($B4)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A & MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// AND AH, (DP:#i16)
+// bitwise AND on high byte of A and memory at address in DP plus 16-bit signed offset, result in high byte of A
+op($B5)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA
+    4, *, HI(A) <- A & MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// AND AL, (DP:#i16)
+// bitwise AND on low byte of A and memory at address in DP plus 16-bit signed offset, result in low byte of A
+op($B6)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A & MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// OR A, #i16
+// bitwise OR on A and 16-bit immediate, result in A
+op($B7)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, X
+// bitwise OR on A and X, result in A
+op($B8)
+    0, *, MDR <- X
+    1, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, Y
+// bitwise OR on A and Y, result in A
+op($B9)
+    0, *, MDR <- Y
+    1, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, (SP:#i16)
+// bitwise OR on A and memory at address in SP plus 16-bit signed offset, result in A
+op($BA)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA; MAR++
+    5, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, (DP:#i16)
+// bitwise OR on A and memory at address in DP plus 16-bit signed offset, result in A
+op($BB)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA; MAR++
+    5, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR AH, #i8
+// bitwise OR on high byte of A and 8-bit immediate, result in low byte of A
+op($BC)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, HI(A) <- A | MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// OR AL, #i8
+// bitwise OR on low byte of A and 8-bit immediate, result in low byte of A
+op($BD)
+    0, *, LO(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(A) <- A | MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// OR AH, (SP:#i16)
+// bitwise OR on high byte of A and memory at address in SP plus 16-bit signed offset, result in high byte of A
+op($BE)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA
+    4, *, HI(A) <- A | MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// OR AL, (SP:#i16)
+// bitwise OR on low byte of A and memory at address in SP plus 16-bit signed offset, result in low byte of A
+op($BF)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A | MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// OR AH, (DP:#i16)
+// bitwise OR on high byte of A and memory at address in DP plus 16-bit signed offset, result in high byte of A
+op($C0)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA
+    4, *, HI(A) <- A | MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// OR AL, (DP:#i16)
+// bitwise OR on low byte of A and memory at address in DP plus 16-bit signed offset, result in low byte of A
+op($C1)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A | MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// XOR A, #i16
+// bitwise XOR on A and 16-bit immediate, result in A
+op($C2)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR A, X
+// bitwise XOR on A and X, result in A
+op($C3)
+    0, *, MDR <- X
+    1, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR A, Y
+// bitwise XOR on A and Y, result in A
+op($C4)
+    0, *, MDR <- Y
+    1, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR A, (SP:#i16)
+// bitwise XOR on A and memory at address in SP plus 16-bit signed offset, result in A
+op($C5)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA; MAR++
+    5, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR A, (DP:#i16)
+// bitwise XOR on A and memory at address in DP plus 16-bit signed offset, result in A
+op($C6)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA; MAR++
+    5, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR AH, #i8
+// bitwise XOR on high byte of A and 8-bit immediate, result in low byte of A
+op($C7)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, HI(A) <- A ^ MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// XOR AL, #i8
+// bitwise XOR on low byte of A and 8-bit immediate, result in low byte of A
+op($C8)
+    0, *, LO(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(A) <- A ^ MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// XOR AH, (SP:#i16)
+// bitwise XOR on high byte of A and memory at address in SP plus 16-bit signed offset, result in high byte of A
+op($C9)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA
+    4, *, HI(A) <- A ^ MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// XOR AL, (SP:#i16)
+// bitwise XOR on low byte of A and memory at address in SP plus 16-bit signed offset, result in low byte of A
+op($CA)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A ^ MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// XOR AH, (DP:#i16)
+// bitwise XOR on high byte of A and memory at address in DP plus 16-bit signed offset, result in high byte of A
+op($CB)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA
+    4, *, HI(A) <- A ^ MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// XOR AL, (DP:#i16)
+// bitwise XOR on low byte of A and memory at address in DP plus 16-bit signed offset, result in low byte of A
+op($CC)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(A) <- A ^ MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SEX A
+// sign extend A (low 8 bits to 16 bits)
+op($CD)
+    0, *, MDR <- A; SETFLAGS_LOBYTE
+    1, N,  HI(A) <- -1; fetch
+    1, !N, HI(A) <- -1 + 1; fetch
+endop
+
+// SHL A
+// logical shift left of A
+op($CE)
+    0, *, MDR <- A
+    1, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// SHR A
+// logical shift right of A
+op($CF)
+    0, *, A <- A; SHR; SETFLAGS_WORD; fetch
+endop
+
+// SHL AH
+// logical shift left of high byte of A
+op($D0)
+    0, *, MDR <- A
+    1, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SHL AL
+// logical shift left of low byte of A
+op($D1)
+    0, *, MDR <- A
+    1, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SHR AH
+// logical shift right of high byte of A
+op($D2)
+    0, *, HI(A) <- A; SHR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SHR AL
+// logical shift right of low byte of A
+op($D3)
+    0, *, LO(A) <- A; SHR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADC A, X
+// add with carry X to A
+op($D4)
+    0, *, MDR <- X
+    1, C, A <- A + MDR + 1; SETFLAGS_WORD; fetch
+    1, !C, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADC A, Y
+// add with carry Y to A
+op($D5)
+    0, *, MDR <- Y
+    1, C, A <- A + MDR + 1; SETFLAGS_WORD; fetch
+    1, !C, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// SBC A, X
+// subtract with carry X from A
+op($D6)
+    0, *, MDR <- X
+    1, C, A <- A - MDR; SETFLAGS_WORD; fetch
+    1, !C, A <- A - MDR - 1; SETFLAGS_WORD; fetch
+endop
+
+// SBC A, Y
+// subtract with carry Y from A
+op($D7)
+    0, *, MDR <- Y
+    1, C, A <- A - MDR; SETFLAGS_WORD; fetch
+    1, !C, A <- A - MDR - 1; SETFLAGS_WORD; fetch
+endop
+
+// ADD SP, #i16
+// Add 16-bit signed immediate to SP
+op($D8)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, SP <- MDR + SP; SETFLAGS_WORD
+    3, *, fetch
+endop
+
+// CMP A, #i16
+// compare A to 16-bit signed immediate, set flags
+op($D9)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, X
+// compare A to X, set flags
+op($DA)
+    0, *, MDR <- X
+    1, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, Y
+// compare A to Y, set flags
+op($DB)
+    0, *, MDR <- Y
+    1, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, (SP:#i16)
+// compare A to memory at address in SP plus 16-bit signed offset
+op($DC)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, (DP:#i16)
+// compare A to memory at address in DP plus 16-bit signed offset
+op($DD)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    4, *, LO(MDR) <- MEM(MAR); DATA
+    5, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP AH, #i8
+// compare AH to 8-bit signed immediate, set flags
+op($DE)
+    0, *, MDR <- MDR ^ MDR
+    1, *, HI(MDR) <- MEM(PC); CODE; PC++
+    2, *, HI(MDR) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// CMP AH, (SP:#i16)
+// compare high byte of A to memory at address in SP plus 16-bit signed offset
+op($DF)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(MDR) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// CMP AH, (DP:#i16)
+// compare high byte of A to memory at address in DP plus 16-bit signed offset
+op($E0)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, MDR <- MDR ^ MDR
+    4, *, HI(MDR) <- MEM(MAR); DATA
+    5, *, HI(MDR) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// CMP AL, #i8
+// compare AL to 8-bit signed immediate, set flags
+op($E1)
+    0, *, LO(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// CMP AL, (SP:#i16)
+// compare low byte of A to memory at address in SP plus 16-bit signed offset
+op($E2)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + SP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(MDR) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// CMP AL, (DP:#i16)
+// compare low byte of A to memory at address in DP plus 16-bit signed offset
+op($E3)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, MAR <- MDR + DP
+    3, *, LO(MDR) <- MEM(MAR); DATA
+    4, *, LO(MDR) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// JE #i16
+// jump if equal (offset relative to PC)
+op($E4)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !Z, fetch
+    2, Z, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JNE #i16
+// jump if not equal (offset relative to PC)
+op($E5)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, Z, fetch
+    2, !Z, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JL #i16
+// jump if lower (offset relative to PC)
+op($E6)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !N, fetch
+    2, N, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JLE #i16
+// jump if lower or equal (offset relative to PC)
+op($E7)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !N !Z, fetch
+    2, N Z, PC <- MDR + PC
+    2, !N Z, PC <- MDR + PC
+    2, N !Z, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JG #i16
+// jump if greater (offset relative to PC)
+op($E8)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, N Z, fetch
+    2, !N Z, fetch
+    2, N !Z, fetch
+    2, !N !Z, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JGE #i16
+// jump if greater or equal (offset relative to PC)
+op($E9)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, N, fetch
+    2, !N, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JLU #i16 // jump if lower unsigned (offset relative to PC)
+op($EA)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !C, fetch
+    2, C, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JLEU #i16 // jump if lower or equal unsigned (offset relative to PC)
+op($EB)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, C Z, PC <- MDR + PC
+    2, C !Z, PC <- MDR + PC
+    2, !C Z, PC <- MDR + PC
+    2, !C !Z, fetch
+    3, *, fetch
+endop
+
+// JGU #i16 // jump if greater unsigned (offset relative to PC)
+op($EC)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, C Z, fetch
+    2, C !Z, fetch
+    2, !C Z, fetch
+    2, !C !Z, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JGEU #i16
+// jump if greater or equal unsigned (offset relative to PC)
+op($ED)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, C, fetch
+    2, !C, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JZ #i16
+// jump if zero (offset relative to PC)
+op($EE)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !Z, fetch
+    2, Z, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JNZ #i16
+// jump if not zero (offset relative to PC)
+op($EF)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, Z, fetch
+    2, !Z, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JC #i16
+// jump if carry (offset relative to PC)
+op($F0)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !C, fetch
+    2, C, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JNC #i16
+// jump if not carry (offset relative to PC)
+op($F1)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, C, fetch
+    2, !C, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JN #i16
+// jump if negative (offset relative to PC)
+op($F2)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !N, fetch
+    2, N, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JNN #i16
+// jump if not negative (offset relative to PC)
+op($F3)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, N, fetch
+    2, !N, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JV #i16
+// jump if overflow (offset relative to PC)
+op($F4)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, !V, fetch
+    2, V, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// JNV #i16 
+// jump if not overflow (offset relative to PC)
+op($F5)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, V, fetch
+    2, !V, PC <- MDR + PC
+    3, *, fetch
+endop
+
+// LEA A, (SP:#i16)
+// load effective address in SP plus 16-bit signed offset to A
+op($F6)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, A <- MDR + SP
+    3, *, fetch
+endop
+
+// LEA A, (DP:#i16)
+// load effective address in DP plus 16-bit signed offset to A
+op($F7)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, A <- MDR + DP
+    3, *, fetch
+endop
+
+// LEA X, (SP:#i16)
+// load effective address in SP plus 16-bit signed offset to X
+op($F8)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, X <- MDR + SP
+    3, *, fetch
+endop
+
+// LEA X, (DP:#i16)
+// load effective address in DP plus 16-bit signed offset to X
+op($F9)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, X <- MDR + DP
+    3, *, fetch    
+endop
+
+// LEA Y, (SP:#i16)
+// load effective address in SP plus 16-bit signed offset to Y
+op($FA)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, Y <- MDR + SP
+    3, *, fetch    
+endop
+
+// LEA Y, (DP:#i16)
+// load effective address in DP plus 16-bit signed offset to Y
+op($FB)
+    0, *, HI(MDR) <- MEM(PC); CODE; PC++
+    1, *, LO(MDR) <- MEM(PC); CODE; PC++
+    2, *, Y <- MDR + DP
+    3, *, fetch    
+endop
+
+// unused
+op($FC)
+	0, *, fetch
+endop
+
+// STI
+// set interrupt enable flag
+op($FD)
+    0, *, MDR <- -1 + 1; LATCH_I; SUPERVISOR;
+    1, *, fetch // separating microinstruction to make STI effective immediately
+endop
+
+// CLI
+// clear interrupt enable flag
+op($FE)
+    0, *, MDR <- -1; LATCH_I; SUPERVISOR;
+    1, *, fetch // separating microinstruction to make CLI effective immediately
+endop
+
+// SYSCALL #i8
+// call a system interrupt
+op($FF)
+    0, *, MDR <- MDR ^ MDR
+    1, *, LO(MDR) <- MEM(PC); CODE              // read function code
+    2, *, PC <- MDR + MDR                       // multiply by 2 to get map offset and store in PC
+    3, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    4, *, MAR <- SP                             // back up SP
+    5, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    6, *, SP--                                  // this is KSP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    8, *, MDR <- MAR                            // store SP
+    9, *, MEM(SP) <- LO(MDR); DATA; SP--
+    10, *, MEM(SP) <- HI(MDR); DATA; SP--
+    11, *, MAR <- IPTR                          // retrieve base address of syscall functions map from interrupt vector (0x1f)
+    12, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    13, *, LO(MDR) <- MEM(MAR); DATA
+    14, *, MAR <- MDR + PC                      // add to previously computed offset to map base address, store in PC
+    15, *, HI(MDR) <- MEM(MAR); DATA; MAR++     // retrieve function addess
+    16, *, LO(MDR) <- MEM(MAR); DATA
+    17, *, PC <- MDR
+    18, *, MEM(SP) <- LO(A); DATA; SP--         // store A
+    19, *, MEM(SP) <- HI(A); DATA; SP--
+    20, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    21, *, MEM(SP) <- HI(X); DATA; SP--
+    22, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    23, *, MEM(SP) <- HI(Y); DATA; SP--
+    24, *, MDR <- DP                            // store DP
+    25, *, MEM(SP) <- LO(MDR); DATA; SP--
+    26, *, MEM(SP) <- HI(MDR); DATA; SP--
+    27, *, MDR <- PPC                           // store PC (the next instruction's starting address)
+    28, *, MDR <- MDR + 1
+    29, *, MEM(SP) <- LO(MDR + 1); DATA; SP--
+    30, *, MEM(SP) <- HI(MDR + 1); DATA
+    31, *, fetch                                // fetch at PC
+endop
+
+// irq0
+op($100)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// irq1
+op($101)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// irq2
+op($102)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// irq3
+op($103)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// irq4
+op($104)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// irq5
+op($105)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// irq6
+op($106)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// irq7
+op($107)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault0 - protection violation
+op($108)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault1
+op($109)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault2
+op($10A)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault3
+op($10B)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault4
+op($10C)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault5
+op($10D)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault6
+op($10E)
+    0, *, MAR <- SP                             // back up SP
+    1, *, MDR <- MSW                            // back up MSW before switching to supervisor (to store original CPU mode)
+    2, *, MDR <- -1 + 1; LATCH_S                // enable supervisor mode (from this point on SP denotes KSP), hardware assures that MDR is not latched here
+    3, *, MDR <- -1; LATCH_I                    // disable further interrupts
+    4, *, SP--                                  // this is KSP
+    5, *, MEM(SP) <- LO(MDR); DATA; SP--        // store MSW
+    6, *, MDR <- MAR                            // store SP
+    7, *, MEM(SP) <- LO(MDR); DATA; SP--
+    8, *, MEM(SP) <- HI(MDR); DATA; SP--
+    9, *, MEM(SP) <- LO(A); DATA; SP--          // store A
+    10, *, MEM(SP) <- HI(A); DATA; SP--
+    11, *, MEM(SP) <- LO(X); DATA; SP--         // store X
+    12, *, MEM(SP) <- HI(X); DATA; SP--
+    13, *, MEM(SP) <- LO(Y); DATA; SP--         // store Y
+    14, *, MEM(SP) <- HI(Y); DATA; SP--
+    15, *, MDR <- DP                            // store DP
+    16, *, MEM(SP) <- LO(MDR); DATA; SP--
+    17, *, MEM(SP) <- HI(MDR); DATA; SP--
+    18, *, MEM(SP) <- LO(PPC); DATA; SP--       // store previousPC (the instruction's starting address)
+    19, *, MEM(SP) <- HI(PPC); DATA
+    20, *, MAR <- IPTR                          // jump to ISR (IPTR contains the fault/IRQ number)
+    21, *, HI(MDR) <- MEM(MAR); DATA; MAR++
+    22, *, LO(MDR) <- MEM(MAR); DATA
+    23, *, PC <- MDR
+    24, *, fetch
+endop
+
+// fault7 - unreachable, opcode used by SYSCALL
+op($10F)
+    0, *, fetch
+endop

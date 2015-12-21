@@ -1,0 +1,8 @@
+#!/bin/bash
+echo Diffing...
+DD=`date +%Y%m%d`
+cd lcc-orig
+diff -Naur . ../lcc > ../lcc-4.2-$DD.patch
+cd ..
+gzip lcc-4.2-$DD.patch 
+echo Completed

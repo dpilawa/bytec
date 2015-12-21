@@ -1,0 +1,2473 @@
+// Microcode v0.6
+// fetch = "CODE; IR <- MEM(PC); PC++"
+
+// NOP 
+op($00)   
+	0, *, fetch
+endop
+
+// HALT 
+op($01)
+	0, *, MDR <- PC
+	1, *, PC <- MDR - 1 
+	2, *, fetch
+endop
+
+// MOV A, X 
+op($02)
+	0, *, A <- X; fetch
+endop
+
+// MOV A, Y 
+op($03)
+	0, *, A <- Y; fetch
+endop
+
+// MOV A, SP 
+op($04)
+	0, *, A <- SP
+	1, *, fetch
+endop
+
+// MOV A, DP
+op($05)
+	0, *, A <- DP; 
+	1, *, fetch
+endop
+
+// MOV X, A
+op($06) 
+	0, *, X <- A; fetch
+endop
+
+// MOV X, Y
+op($07)
+	0, *, X <- Y; fetch
+endop
+
+// MOV Y, A
+op($08) 
+	0, *, Y <- A; fetch
+endop
+
+// MOV Y, X
+op($09)
+	0, *, Y <- X; fetch
+endop
+
+// MOV SP, A 
+op($0A) 
+	0, *, SP <- A; fetch
+endop
+
+// MOV SP, DP
+op($0B)
+	0, *, SP <- DP;
+	1, *, fetch
+endop
+
+// MOV DP, A 
+op($0C) 
+	0, *, DP <- A; fetch
+endop
+
+// MOV DP, SP 
+op($0D) 
+	0, *, DP <- SP;
+	1, *, fetch
+endop
+
+// MOV AL, MSW 
+op($0E) 
+	0, *, LO(A) <- MSW; fetch
+endop
+
+// MOV MSW, AL
+op($0F) 
+	0, *, MSW <- A; SUPERVISOR; fetch	// only low byte of A loaded here
+endop
+
+// PUSH A 
+op($10)
+	0, *, SP--
+	1, *, MEM(SP) <- LO(A); SP--
+	2, *, MEM(SP) <- HI(A);
+	3, *, fetch
+endop
+
+// PUSH X 
+op($11)
+	0, *, SP--
+	1, *, MEM(SP) <- LO(X); SP--
+	2, *, MEM(SP) <- HI(X)
+	3, *, fetch
+endop
+
+// PUSH Y 
+op($12)
+	0, *, SP--
+	1, *, MEM(SP) <- LO(Y); SP--
+	2, *, MEM(SP) <- HI(Y)
+	3, *, fetch
+endop
+
+// PUSH SP 
+op($13)
+	0, *, MDR <- SP; SP--
+	1, *, MEM(SP) <- LO(MDR); SP--
+	2, *, MEM(SP) <- HI(MDR)
+	3, *, fetch
+endop
+
+// PUSH DP 
+op($14) 
+	0, *, MDR <- DP; SP--
+	1, *, MEM(SP) <- LO(MDR); SP--
+	2, *, MEM(SP) <- HI(MDR)	
+	3, *, fetch
+endop
+
+// PUSH PC 
+op($15) 
+	0, *, MDR <- PC; SP--
+	1, *, MEM(SP) <- LO(MDR); SP--
+	2, *, MEM(SP) <- HI(MDR)
+	3, *, fetch
+endop
+
+// POP A 
+op($16)
+	0, *, HI(A) <- MEM(SP); SP++
+	1, *, LO(A) <- MEM(SP); SP++
+	2, *, fetch
+endop
+
+// POP X 
+op($17) 
+	0, *, HI(MDR) <- MEM(SP); SP++
+	1, *, LO(MDR) <- MEM(SP); SP++
+	2, *, X <- MDR; fetch
+endop
+
+// POP Y 
+op($18) 
+	0, *, HI(MDR) <- MEM(SP); SP++
+	1, *, LO(MDR) <- MEM(SP); SP++
+	2, *, Y <- MDR; fetch
+endop
+
+// POP SP 
+op($19) 
+	0, *, HI(MDR) <- MEM(SP); SP++
+	1, *, LO(MDR) <- MEM(SP); SP++
+	2, *, SP <- MDR; fetch
+endop
+
+// POP DP 
+op($1A) 
+	0, *, HI(MDR) <- MEM(SP); SP++
+	1, *, LO(MDR) <- MEM(SP); SP++
+	2, *, DP <- MDR; fetch
+endop
+
+// POP PC
+op($1B)
+	0, *, HI(MDR) <- MEM(SP); SP++
+	1, *, LO(MDR) <- MEM(SP); SP++
+	2, *, PC <- MDR; 
+	3, *, fetch
+endop
+
+// JMP #i16 
+op($1C) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, PC <- MDR + PC
+	3, *, fetch
+endop
+
+// CALL #i16 
+op($1D)
+	0, *, HI(MAR) <- MEM(PC); CODE; PC++
+	1, *, LO(MAR) <- MEM(PC); CODE; PC++
+	2, *, MDR <- PC; SP--
+	3, *, MEM(SP) <- HI(MDR); SP--
+	4, *, MEM(SP) <- LO(MDR);	
+	5, *, PC <- MDR + MAR
+	6, *, fetch
+endop
+
+// RET 
+op($1E) 
+	0, *, LO(MDR) <- MEM(SP); SP++
+	1, *, HI(MDR) <- MEM(SP); SP++
+	2, *, PC <- MDR
+	3, *, fetch
+endop
+
+// IRET 
+op($1F) 
+	0, *,  HI(MDR) <- MEM(SP); SP++			// restore PC
+	1, *,  LO(MDR) <- MEM(SP); SP++
+	2, *,  PC <- MDR
+	3, *,  HI(MDR) <- MEM(SP); SP++			// restore DP
+	4, *,  LO(MDR) <- MEM(SP); SP++
+	5, *,  DP <- MDR	
+	6, *,  HI(MDR) <- MEM(SP); SP++			// restore Y
+	7, *,  LO(MDR) <- MEM(SP); SP++
+	8, *,  Y <- MDR
+	9, *,  HI(MDR) <- MEM(SP); SP++			// restore X
+	10, *, LO(MDR) <- MEM(SP); SP++
+	11, *, X <- MDR	
+	12, *, HI(A) <- MEM(SP); SP++			// restore A
+	13, *, LO(A) <- MEM(SP); SP++
+	14, *, HI(MAR) <- MEM(SP); SP++			// restore SP value (but not yet set SP)
+	15, *, LO(MAR) <- MEM(SP); SP++
+	16, *, HI(MDR) <- MEM(SP); SP++			// restore MSW value (but not yet set MSW)
+	17, *, LO(MDR) <- MEM(SP); SP++
+	18, *, MSW <- MDR						// restore machine status word (CPU mode, etc.)
+	19, *, SP <- MAR						// restore stack pointer (KSP or USP here, depending on CPU mode)
+	20, *, MDR <- -1 + 1; LATCH_I; fetch	// enable interrupts and fetch
+endop
+
+// SYSCALL 
+op($20) 
+endop
+
+// LD A, #i16 
+op($21) 
+	0, *, HI(A) <- MEM(PC); CODE; PC++
+	1, *, LO(A) <- MEM(PC); CODE; PC++
+	2, *, fetch
+endop
+
+// LD A, #i8 
+op($22) 
+	0, *, A <- MEM(PC); CODE; PC++ // sign extended
+	1, *, fetch
+endop
+
+// LD A, (SP) 
+op($23) 
+	0, *, MAR <- SP;
+	1, *, HI(A) <- MEM(MAR); MAR++
+	2, *, LO(A) <- MEM(MAR)
+	3, *, fetch
+endop
+
+// LD A, (SP:#i8) 
+op($24)
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(A) <- MEM(MAR); MAR++
+	3, *, LO(A) <- MEM(MAR);
+	4, *, fetch
+endop
+
+// LD A, (SP:#i16) 
+op($25) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(A) <- MEM(MAR); MAR++
+	4, *, LO(A) <- MEM(MAR);
+	5, *, fetch
+endop
+
+// LD A, (DP:#i16) 
+op($26)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(A) <- MEM(MAR); MAR++
+	4, *, LO(A) <- MEM(MAR);
+	5, *, fetch
+endop
+
+// LD A, (A:#i16) 
+op($27) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, HI(A) <- MEM(MAR); MAR++
+	4, *, LO(A) <- MEM(MAR);
+	5, *, fetch
+endop
+
+// LD A, (X:#i16) 
+op($28) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, HI(A) <- MEM(MAR); MAR++
+	4, *, LO(A) <- MEM(MAR);
+	5, *, fetch
+endop
+
+// LD A, (Y:#i16) 
+op($29) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, HI(A) <- MEM(MAR); MAR++
+	4, *, LO(A) <- MEM(MAR);
+	5, *, fetch
+endop
+
+// LD X, #i16 
+op($2A) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, X <- MDR; fetch
+endop
+
+// LD X, #i8 
+op($2B) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, X <- MDR; fetch
+endop
+
+// LD X, (SP) 
+op($2C)
+	0, *, MAR <- SP;
+	1, *, HI(MDR) <- MEM(MAR); MAR++
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, X <- MDR; fetch
+endop
+
+// LD X, (SP:#i8) 
+op($2D) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR); MAR++
+	3, *, LO(MDR) <- MEM(MAR);
+	4, *, X <- MDR; fetch	
+endop
+
+// LD X, (SP:#i16) 
+op($2E) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, X <- MDR; fetch	
+endop
+
+// LD X, (DP:#i16) 
+op($2F)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, X <- MDR; fetch	
+endop
+
+// LD X, (A:#i16) 
+op($30) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, X <- MDR; fetch	
+endop
+
+// LD X, (X:#i16) 
+op($31)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, X <- MDR; fetch	
+endop
+
+// LD X, (Y:#i16) 
+op($32)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, X <- MDR; fetch	
+endop
+
+// LD Y, #i16 
+op($33) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, Y <- MDR; fetch
+endop
+
+// LD Y, #i8 
+op($34) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, Y <- MDR; fetch	
+endop
+
+// LD Y, (SP) 
+op($35) 
+	0, *, MAR <- SP;
+	1, *, HI(MDR) <- MEM(MAR); MAR++
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, Y <- MDR; fetch
+endop
+
+// LD Y, (SP:#i8) 
+op($36)
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR); MAR++
+	3, *, LO(MDR) <- MEM(MAR);
+	4, *, Y <- MDR; fetch
+endop
+
+// LD Y, (SP:#i16) 
+op($37) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (DP:#i16) 
+op($38) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (A:#i16) 
+op($39) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (X:#i16) 
+op($3A) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, Y <- MDR; fetch
+endop
+
+// LD Y, (Y:#i16) 
+op($3B) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR);
+	5, *, Y <- MDR; fetch
+endop
+
+// LD AH, #i8 
+op($3C) 
+	0, *, HI(A) <- MEM(PC); CODE; PC++
+	1, *, fetch
+endop
+
+// LD AL, #i8 
+op($3D) 
+	0, *, LO(A) <- MEM(PC); CODE; PC++
+	1, *, fetch
+endop
+
+// LD AH, (SP:#i8) 
+op($3E)
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(A) <- MEM(MAR)
+	3, *, fetch
+endop
+
+// LD AL, (SP:#i8) 
+op($3F) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, LO(A) <- MEM(MAR)
+	3, *, fetch
+endop
+
+// LD AH, (SP:#i16) 
+op($40) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + SP
+	3, *, HI(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AL, (SP:#i16) 
+op($41) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + SP
+	3, *, LO(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AH, (DP:#i16) 
+op($42) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + DP
+	3, *, HI(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AL, (DP:#i16) 
+op($43) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + DP
+	3, *, LO(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AH, (A:#i16) 
+op($44) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- A + MDR
+	3, *, HI(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AL, (A:#i16) 
+op($45) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- A + MDR
+	3, *, LO(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AH, (X:#i16) 
+op($46)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- X + MDR
+	3, *, HI(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AL, (X:#i16) 
+op($47) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- X + MDR
+	3, *, LO(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AH, (Y:#i16) 
+op($48)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- Y + MDR
+	3, *, HI(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// LD AL, (Y:#i16) 
+op($49)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- Y + MDR
+	3, *, LO(A) <- MEM(MAR)
+	4, *, fetch
+endop
+
+// ST (SP), A 
+op($4A)
+	0, *, MAR <- SP
+	1, *, MEM(MAR) <- HI(A); MAR++
+	2, *, MEM(MAR) <- LO(A);
+	3, *, fetch
+endop
+
+// ST (SP:#i8), A 
+op($4B) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MEM(MAR) <- HI(A); MAR++
+	3, *, MEM(MAR) <- LO(A)
+	4, *, fetch
+endop
+
+// ST (SP:#i16), A 
+op($4C) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MEM(MAR) <- HI(A); MAR++
+	4, *, MEM(MAR) <- LO(A)
+	5, *, fetch
+endop
+
+// ST (DP:#i16), A 
+op($4D) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MEM(MAR) <- HI(A); MAR++
+	4, *, MEM(MAR) <- LO(A)
+	5, *, fetch
+endop
+
+// ST (A:#i16), A 
+op($4E)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, MEM(MAR) <- HI(A); MAR++
+	4, *, MEM(MAR) <- LO(A)
+	5, *, fetch
+endop
+
+// ST (X:#i16), A 
+op($4F)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, MEM(MAR) <- HI(A); MAR++
+	4, *, MEM(MAR) <- LO(A)
+	5, *, fetch
+endop
+
+// ST (Y:#i16), A 
+op($50) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, MEM(MAR) <- HI(A); MAR++
+	4, *, MEM(MAR) <- LO(A)
+	5, *, fetch
+endop
+
+// ST (SP), X 
+op($51)
+	0, *, MAR <- SP
+	1, *, MEM(MAR) <- HI(X); MAR++
+	2, *, MEM(MAR) <- LO(X);
+	3, *, fetch
+endop
+
+// ST (SP:#i8), X 
+op($52) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MEM(MAR) <- HI(X); MAR++
+	3, *, MEM(MAR) <- LO(X)
+	4, *, fetch
+endop
+
+// ST (SP:#i16), X 
+op($53) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MEM(MAR) <- HI(X); MAR++
+	4, *, MEM(MAR) <- LO(X)
+	5, *, fetch
+endop
+
+// ST (DP:#i16), X 
+op($54) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MEM(MAR) <- HI(X); MAR++
+	4, *, MEM(MAR) <- LO(X)
+	5, *, fetch
+endop
+
+// ST (A:#i16), X 
+op($55) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, MEM(MAR) <- HI(X); MAR++
+	4, *, MEM(MAR) <- LO(X)
+	5, *, fetch
+endop
+
+// ST (X:#i16), X 
+op($56) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, MEM(MAR) <- HI(X); MAR++
+	4, *, MEM(MAR) <- LO(X)
+	5, *, fetch
+endop
+
+// ST (Y:#i16), X 
+op($57) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, MEM(MAR) <- HI(X); MAR++
+	4, *, MEM(MAR) <- LO(X)
+	5, *, fetch
+endop
+
+// ST (SP), Y 
+op($58) 
+	0, *, MAR <- SP
+	1, *, MEM(MAR) <- HI(Y); MAR++
+	2, *, MEM(MAR) <- LO(Y);
+	3, *, fetch
+endop
+
+// ST (SP:#i8), Y 
+op($59)
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MEM(MAR) <- HI(Y); MAR++
+	3, *, MEM(MAR) <- LO(Y)
+	4, *, fetch
+endop
+
+// ST (SP:#i16), Y 
+op($5A) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MEM(MAR) <- HI(Y); MAR++
+	4, *, MEM(MAR) <- LO(Y)
+	5, *, fetch
+endop
+
+// ST (DP:#i16), Y 
+op($5B) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MEM(MAR) <- HI(Y); MAR++
+	4, *, MEM(MAR) <- LO(Y)
+	5, *, fetch
+endop
+
+// ST (A:#i16), Y 
+op($5C) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, MEM(MAR) <- HI(Y); MAR++
+	4, *, MEM(MAR) <- LO(Y)
+	5, *, fetch
+endop
+
+// ST (X:#i16), Y 
+op($5D) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, MEM(MAR) <- HI(Y); MAR++
+	4, *, MEM(MAR) <- LO(Y)
+	5, *, fetch
+endop
+
+// ST (Y:#i16), Y 
+op($5E) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, MEM(MAR) <- HI(Y); MAR++
+	4, *, MEM(MAR) <- LO(Y)
+	5, *, fetch
+endop
+
+// ST (SP), AH 
+op($5F) 
+	0, *, MEM(SP) <- HI(A)
+	1, *, fetch
+endop
+
+// ST (SP), AL 
+op($60) 
+	0, *, MEM(SP) <- LO(A)
+	1, *, fetch
+endop
+
+// ST (SP:#i8), AH 
+op($61) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MEM(MAR) <- HI(A)
+	3, *, fetch
+endop
+
+// ST (SP:#i8), AL 
+op($62) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MEM(MAR) <- LO(A)
+	3, *, fetch
+endop
+
+// ST (SP:#i16), AH 
+op($63) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MEM(MAR) <- HI(A)
+	4, *, fetch
+endop
+
+// ST (SP:#i16), AL 
+op($64) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MEM(MAR) <- LO(A)
+	4, *, fetch
+endop
+
+// ST (DP:#i16), AH 
+op($65) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MEM(MAR) <- HI(A)
+	4, *, fetch
+endop
+
+// ST (DP:#i16), AL 
+op($66) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MEM(MAR) <- LO(A)
+	4, *, fetch
+endop
+
+// ST, (A:#i16), AH 
+op($67)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, MEM(MAR) <- HI(A)
+	4, *, fetch
+endop
+
+// ST (A:#i16), AL 
+op($68)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- A + MDR
+	3, *, MEM(MAR) <- LO(A)
+	4, *, fetch
+endop
+
+// ST (X:#i16), AH 
+op($69) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, MEM(MAR) <- HI(A)
+	4, *, fetch
+endop
+
+// ST (X:#i16), AL 
+op($6A) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- X + MDR
+	3, *, MEM(MAR) <- LO(A)
+	4, *, fetch
+endop
+
+// ST (Y:#i16), AH 
+op($6B)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, MEM(MAR) <- HI(A)
+	4, *, fetch
+endop
+
+// ST (Y:#i16), AL 
+op($6C)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- Y + MDR
+	3, *, MEM(MAR) <- LO(A)
+	4, *, fetch
+endop
+
+// ADD A, #i8 
+op($6D) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, #i16 
+op($6E) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, X 
+op($6F)
+	0, *, MDR <- X
+	1, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, Y 
+op($70)
+	0, *, MDR <- Y
+	1, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (SP) 
+op($71)
+	0, *, MAR <- SP
+	1, *, HI(MDR) <- MEM(MAR); MAR++
+	2, *, LO(MDR) <- MEM(MAR); MAR++	
+	3, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (SP:#i8) 
+op($72) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR); MAR++
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (SP:#i16) 
+op($73) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR)
+	5, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD A, (DP:#i16) 
+op($74) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR)
+	5, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD AH, (SP) 
+op($75) 
+	0, *, HI(MDR) <- MEM(SP)  // MDR is cleared on instruction boundary
+	1, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch 
+endop
+
+// ADD AH, (SP:#i8) 
+op($76) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MDR <- MDR ^ MDR
+	3, *, HI(MDR) <- MEM(MAR)
+	4, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AH, (SP:#i16) 
+op($77)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MDR <- MDR ^ MDR
+	4, *, HI(MDR) <- MEM(MAR)
+	5, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AH, (DP:#i16) 
+op($78)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MDR <- MDR ^ MDR
+	4, *, HI(MDR) <- MEM(MAR)
+	5, *, HI(A) <- A + MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// ADD AL, (SP) 
+op($79)
+	0, *, LO(MDR) <- MEM(SP)
+	1, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch 
+endop
+
+// ADD AL, (SP:#i8) 
+op($7A) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADD AL, (SP:#i16) 
+op($7B) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADD AL, (DP:#i16) 
+op($7C) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A + MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB A, #i8 
+op($7D) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, #i16 
+op($7E) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, X 
+op($7F) 
+	0, *, MDR <- X
+	1, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, Y 
+op($80) 
+	0, *, MDR <- Y
+	1, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (SP) 
+op($81) 
+	0, *, MAR <- SP
+	1, *, HI(MDR) <- MEM(MAR); MAR++
+	2, *, LO(MDR) <- MEM(MAR); MAR++	
+	3, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (SP:#i8) 
+op($82) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR); MAR++
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (SP:#i16) 
+op($83) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR)
+	5, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB A, (DP:#i16) 
+op($84) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR)
+	5, *, A <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// SUB AH, (SP) 
+op($85) 
+	0, *, HI(MDR) <- MEM(SP) // MDR is cleared on instruction boundary
+	1, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch 
+endop
+
+// SUB AH, (SP:#i8) 
+op($86) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MDR <- MDR ^ MDR
+	3, *, HI(MDR) <- MEM(MAR)
+	4, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AH, (SP:#i16) 
+op($87) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MDR <- MDR ^ MDR
+	4, *, HI(MDR) <- MEM(MAR)
+	5, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AH, (DP:#i16) 
+op($88) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MDR <- MDR ^ MDR
+	4, *, HI(MDR) <- MEM(MAR)
+	5, *, HI(A) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// SUB AL, (SP) 
+op($89) 
+	0, *, LO(MDR) <- MEM(SP)
+	1, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB AL, (SP:#i8) 
+op($8A) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB AL, (SP:#i16) 
+op($8B) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// SUB AL, (DP:#i16) 
+op($8C) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// AND A, #i16 
+op($8D) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, X 
+op($8E) 
+	0, *, MDR <- X
+	1, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, Y 
+op($8F) 
+	0, *, MDR <- Y
+	1, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, (SP) 
+op($90) 
+	0, *, MAR <- SP
+	1, *, HI(MDR) <- MEM(MAR); MAR++
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, (SP:#i8) 
+op($91) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR); MAR++
+	3, *, LO(MDR) <- MEM(MAR); MAR++
+	4, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, (SP:#i16) 
+op($92) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR); MAR++
+	5, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND A, (DP:#i16) 
+op($93) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR); MAR++
+	5, *, A <- A & MDR; SETFLAGS_WORD; fetch
+endop
+
+// AND AH, (SP) 
+op($94) 
+	0, *, HI(MDR) <- MEM(SP)
+	1, *, HI(A) <- A & MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// AND AH, (SP:#i8) 
+op($95) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR)
+	3, *, HI(A) <- A & MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// AND AH, (SP:#i16) 
+op($96) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR)
+	4, *, HI(A) <- A & MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// AND AH, (DP:#i16) 
+op($97) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR)
+	4, *, HI(A) <- A & MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// AND AL, (SP) 
+op($98) 
+	0, *, LO(MDR) <- MEM(SP)
+	1, *, LO(A) <- A & MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// AND AL, (SP:#i8) 
+op($99) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, LO(A) <- A & MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// AND AL, (SP:#i16) 
+op($9A) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + SP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A & MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// AND AL, (DP:#i16) 
+op($9B)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + DP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A & MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// OR A, #i16 
+op($9C) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, X 
+op($9D) 
+	0, *, MDR <- X
+	1, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, Y 
+op($9E)
+	0, *, MDR <- Y
+	1, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, (SP) 
+op($9F) 
+	0, *, MAR <- SP
+	1, *, HI(MDR) <- MEM(MAR); MAR++
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, (SP:#i8) 
+op($A0) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR); MAR++
+	3, *, LO(MDR) <- MEM(MAR); MAR++
+	4, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, (SP:#i16) 
+op($A1) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR); MAR++
+	5, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR A, (DP:#i16) 
+op($A2) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR); MAR++
+	5, *, A <- A | MDR; SETFLAGS_WORD; fetch
+endop
+
+// OR AH, (SP) 
+op($A3) 
+	0, *, HI(MDR) <- MEM(SP)
+	1, *, HI(A) <- A | MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// OR AH, (SP:#i8) 
+op($A4) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR)
+	3, *, HI(A) <- A | MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// OR AH, (SP:#i16) 
+op($A5) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR)
+	4, *, HI(A) <- A | MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// OR AH, (DP:#i16) 
+op($A6) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR)
+	4, *, HI(A) <- A | MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// OR AL, (SP) 
+op($A7) 
+	0, *, LO(MDR) <- MEM(SP)
+	1, *, LO(A) <- A | MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// OR AL, (SP:#i8) 
+op($A8) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, LO(A) <- A | MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// OR AL, (SP:#i16) 
+op($A9) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + SP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A | MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// OR AL, (DP:#i16) 
+op($AA) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++	
+	2, *, MAR <- MDR + DP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(A) <- A | MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// XOR A, #i16 
+op($AB) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR A, A 
+op($AC) 
+	0, *, MDR <- A
+	1, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR A, X 
+op($AD) 
+	0, *, MDR <- X
+	1, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR A, Y 
+op($AE) 
+	0, *, MDR <- Y
+	1, *, A <- A ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR X, X 
+op($AF) 
+	0, *, MDR <- X
+	1, *, X <- X ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// XOR Y, Y 
+op($B0) 
+	0, *, MDR <- Y
+	1, *, Y <- Y ^ MDR; SETFLAGS_WORD; fetch
+endop
+
+// SHL A 
+op($B1) 
+	0, *, MDR <- A
+	1, *, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// SHL X 
+op($B2)
+	0, *, MDR <- X
+	1, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// SHL Y 
+op($B3) 
+	0, *, MDR <- Y
+	1, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// SHR A 
+op($B4) 
+	0, *, A <- A; SHR; SETFLAGS_WORD
+	1, *, A <- A; fetch
+endop
+
+// SHR X 
+op($B5) 
+	0, *, X <- X; SHR; SETFLAGS_WORD
+	1, *, X <- X; fetch
+endop
+
+// SHR Y 
+op($B6) 
+	0, *, Y <- Y; SHR; SETFLAGS_WORD
+	1, *, Y <- Y; fetch
+endop
+
+// SHL AH 
+op($B7) 
+	0, *, HI(MDR) <- A
+	1, *, HI(MDR) <- MDR + MDR; SETFLAGS_HIBYTE
+	2, *, HI(A) <- MDR; fetch
+endop
+
+// SHL AL 
+op($B8) 
+	0, *, LO(MDR) <- A + A; SETFLAGS_LOBYTE
+	1, *, LO(A) <- MDR; fetch
+endop
+
+// SHR AH
+op($B9) 
+	0, *, HI(MDR) <- A; SHR; SETFLAGS_HIBYTE
+	1, *, HI(A) <- MDR; fetch
+endop
+
+// SHR AL 
+op($BA)
+	0, *, LO(MDR) <- A;
+	1, *, LO(A) <- MDR; SHR; SETFLAGS_LOBYTE; fetch
+endop
+
+// ADC A, X 
+op($BB) 
+	0, *, MDR <- X
+	1, C, A <- A + MDR + 1; SETFLAGS_WORD; fetch
+	1, !C, A <- A + MDR; SETFLAGS_WORD; fetch 
+endop
+
+// ADC A, Y 
+op($BC)
+	0, *, MDR <- Y
+	1, C, A <- A + MDR + 1; SETFLAGS_WORD; fetch
+	1, !C, A <- A + MDR; SETFLAGS_WORD; fetch
+endop
+
+// SBC A, X 
+op($BD) 
+	0, *, MDR <- X
+	1, C, A <- A - MDR; SETFLAGS_WORD; fetch
+	1, !C, A <- A - MDR - 1; SETFLAGS_WORD; fetch
+endop
+
+// SBC A, Y 
+op($BE) 
+	0, *, MDR <- Y
+	1, C, A <- A - MDR; SETFLAGS_WORD; fetch
+	1, !C, A <- A - MDR - 1; SETFLAGS_WORD; fetch
+endop
+
+// ADD SP, #i8 
+op($BF) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, SP <- MDR + SP; SETFLAGS_WORD;
+	2, *, fetch
+endop
+
+// ADD DP, #i8 
+op($C0) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, DP <- MDR + DP; SETFLAGS_WORD;
+	2, *, fetch
+endop
+
+// ADD X, #i8 
+op($C1) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, X <- X + MDR; SETFLAGS_WORD; fetch
+endop
+
+// ADD Y, #i8 
+op($C2) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, Y <- Y + MDR; SETFLAGS_WORD; fetch
+endop
+
+// PUSH AH
+op($C3)
+	0, *, SP--
+	1, *, MEM(SP) <- HI(A)
+	2, *, fetch
+endop
+
+// PUSH AL 
+op($C4) 
+	0, *, SP--
+	1, *, MEM(SP) <- LO(A)
+	2, *, fetch
+endop
+
+// CMP A, #i8 
+op($C5) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, #i16 
+op($C6) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, X 
+op($C7) 
+	0, *, MDR <- X
+	1, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, Y 
+op($C8) 
+	0, *, MDR <- Y
+	1, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, (SP) 
+op($C9) 
+	0, *, MAR <- SP
+	1, *, HI(MDR) <- MEM(MAR); MAR++
+	2, *, LO(MDR) <- MEM(MAR); MAR++	
+	3, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, (SP:#i8) 
+op($CA) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, HI(MDR) <- MEM(MAR); MAR++
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, (SP:#i16) 
+op($CB) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR)
+	5, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP A, (DP:#i16) 
+op($CC) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, HI(MDR) <- MEM(MAR); MAR++
+	4, *, LO(MDR) <- MEM(MAR)
+	5, *, MDR <- A - MDR; SETFLAGS_WORD; fetch
+endop
+
+// CMP AH, (SP) 
+op($CD) 
+	0, *, HI(MDR) <- MEM(SP)
+	1, *, HI(MDR) <- A - MDR; SETFLAGS_HIBYTE; fetch 
+endop
+
+// CMP AH, (SP:#i8) 
+op($CE) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, MDR <- MDR ^ MDR
+	3, *, HI(MDR) <- MEM(MAR)
+	4, *, HI(MDR) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// CMP AH, (SP:#i16) 
+op($CF) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, MDR <- MDR ^ MDR
+	4, *, HI(MDR) <- MEM(MAR)
+	5, *, HI(MDR) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// CMP AH, (DP:#i16) 
+op($D0) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, MDR <- MDR ^ MDR
+	4, *, HI(MDR) <- MEM(MAR)
+	5, *, HI(MDR) <- A - MDR; SETFLAGS_HIBYTE; fetch
+endop
+
+// CMP AL, (SP) 
+op($D1) 
+	0, *, LO(MDR) <- MEM(SP)
+	1, *, LO(MDR) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// CMP AL, (SP:#i8) 
+op($D2) 
+	0, *, MDR <- MEM(PC); CODE; PC++
+	1, *, MAR <- MDR + SP
+	2, *, LO(MDR) <- MEM(MAR)
+	3, *, LO(MDR) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// CMP AL, (SP:#i16) 
+op($D3)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + SP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(MDR) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// CMP AL, (DP:#i16) 
+op($D4) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, *, MAR <- MDR + DP
+	3, *, LO(MDR) <- MEM(MAR)
+	4, *, LO(MDR) <- A - MDR; SETFLAGS_LOBYTE; fetch
+endop
+
+// JE #i16 
+op($D5)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, !Z, fetch
+	2, Z, PC <- MDR + PC
+	3, *, fetch
+endop
+
+// JL #i16 
+op($D6)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, N Z, fetch
+	2, !N Z, fetch
+	2, N !Z, fetch
+	2, !N !Z, PC <- MDR + PC
+	3, *, fetch	
+endop
+
+// JLE #i16 
+op($D7)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, N, fetch
+	2, !N, PC <- MDR + PC
+	3, *, fetch	
+endop
+
+// JG #i16 
+op($D8) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, !N, fetch
+	2, N, PC <- MDR + PC
+	3, *, fetch
+endop
+
+// JGE #i16 
+op($D9) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, !N !Z, fetch
+	2, N Z, PC <- MDR + PC
+	2, !N Z, PC <- MDR + PC
+	2, N !Z, PC <- MDR + PC
+	3, *, fetch
+endop
+
+// JZ #i16 
+op($DA) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, !Z, fetch
+	2, Z, PC <- MDR + PC
+	3, *, fetch
+endop
+
+// JNE #i16 
+op($DB)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, Z, fetch
+	2, !Z, PC <- MDR + PC
+	3, *, fetch
+endop
+
+//  JNZ #i16
+op($DC) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, Z, fetch
+	2, !Z, PC <- MDR + PC
+	3, *, fetch
+endop
+
+//  JC #i16
+op($DD) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, !C, fetch
+	2, C, PC <- MDR + PC
+	3, *, fetch
+endop
+
+//  JNC #i16
+op($DE) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, C, fetch
+	2, !C, PC <- MDR + PC
+	3, *, fetch
+endop
+
+//  JN #i16
+op($DF) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, !N, fetch
+	2, N, PC <- MDR + PC
+	3, *, fetch
+endop
+
+//  JNN #i16
+op($E0) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, N, fetch
+	2, !N, PC <- MDR + PC
+	3, *, fetch
+endop
+
+//  JV #i16
+op($E1) 
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, !V, fetch
+	2, V, PC <- MDR + PC
+	3, *, fetch
+endop
+
+//  JNV #i16
+op($E2)
+	0, *, HI(MDR) <- MEM(PC); CODE; PC++
+	1, *, LO(MDR) <- MEM(PC); CODE; PC++
+	2, V, fetch
+	2, !V, PC <- MDR + PC
+	3, *, fetch 
+endop
+
+//  op($E3) endop
+//  op($E4) endop
+
+// STI
+op($E5) 
+	0, *, MDR <- -1 + 1; LATCH_I; SUPERVISOR; fetch
+endop
+
+// INC X
+op($E6) 
+	0, *, X <- X + 1; SETFLAGS_WORD; fetch
+endop
+
+// DEC X
+op($E7) 
+	0, *, X <- X - 1; SETFLAGS_WORD; fetch
+endop
+
+// INC Y
+op($E8)
+	0, *, Y <- Y + 1; SETFLAGS_WORD; fetch 
+endop
+
+// DEC Y
+op($E9) 
+	0, *, Y <- Y - 1; SETFLAGS_WORD; fetch
+endop
+
+// LD A, (DP)
+op($EA)
+	0, *, MAR <- DP
+	1, *, HI(A) <- MEM(MAR); MAR++
+	2, *, LO(A) <- MEM(MAR)
+	3, *, fetch
+endop
+
+// LD A, (DP:X)
+op($EB) 
+	0, *, MAR <- X + DP
+	1, *, HI(A) <- MEM(MAR); MAR++
+	2, *, LO(A) <- MEM(MAR)
+	3, *, fetch
+endop
+
+// LD A, (DP:Y)
+op($EC) 
+	0, *, MAR <- Y + DP
+	1, *, HI(A) <- MEM(MAR); MAR++
+	2, *, LO(A) <- MEM(MAR)
+	3, *, fetch
+endop
+
+// ST (DP), A
+op($ED)
+	0, *, MAR <- DP
+	1, *, MEM(MAR) <- HI(A); MAR++
+	2, *, MEM(MAR) <- LO(A)
+	3, *, fetch
+endop
+
+// ST (DP:X), A
+op($EE)
+	0, *, MAR <- X + DP
+	1, *, MEM(MAR) <- HI(A); MAR++
+	2, *, MEM(MAR) <- LO(A)
+	3, *, fetch
+endop
+
+// ST (DP:Y), A
+op($EF)
+	0, *, MAR <- Y + DP
+	1, *, MEM(MAR) <- HI(A); MAR++
+	2, *, MEM(MAR) <- LO(A)
+	3, *, fetch 
+endop
+
+// LD AL, (DP) 
+op($F0)
+	0, *, LO(A) <- MEM(DP)
+	1, *, fetch
+endop
+
+// ST (DP), AL 
+op($F1) 
+	0, *, MEM(DP) <- LO(A)
+	1, *, fetch
+endop
+
+// UNDEFINED
+op($F2)
+	0, *, fetch 
+endop
+
+//  
+op($F3) 
+	0, *, fetch
+endop
+
+//  
+op($F4) 
+	0, *, fetch
+endop
+
+//  
+op($F5) 
+	0, *, fetch
+endop
+
+//  
+op($F6) 
+	0, *, fetch
+endop
+
+//  
+op($F7) 
+	0, *, fetch
+endop
+
+//  
+op($F8) 
+	0, *, fetch
+endop
+
+//  
+op($F9) 
+	0, *, fetch
+endop
+
+//  
+op($FA) 
+	0, *, fetch
+endop
+
+//  
+op($FB) 
+	0, *, fetch
+endop
+
+//  
+op($FC) 
+	0, *, fetch
+endop
+
+//  
+op($FD) 
+	0, *, fetch
+endop
+
+//  
+op($FE) 
+	0, *, fetch
+endop
+
+//  
+op($FF) 
+	0, *, fetch
+endop
+
+// fault0 
+op($100) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// fault1 
+op($101) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// fault2 
+op($102) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// fault3 
+op($103) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// fault4 
+op($104) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// fault5 
+op($105) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// fault6 
+op($106) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// fault7 
+op($107) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq0 
+op($108) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq1 
+op($109) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq2 
+op($10A)
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq3 
+op($10B) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq4 
+op($10C) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq5 
+op($10D)
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq6 
+op($10E) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop
+
+// irq7 
+op($10F) 
+	0, *, MDR <- -1; LATCH_I			// disable further interrupts
+	1, *, MAR <- SP						// back up SP
+	2, *, MDR <- MSW					// back up MSW before switching to supervisor (to store original CPU mode)
+	3, *, MDR <- -1 + 1; LATCH_S		// enable supervisor mode (from now on SP denotes KSP), logic assured MDR is not latched here
+	4, *, SP--							// this is KSP
+	5, *, MEM(SP) <- LO(MDR); SP--		// store MSW
+	6, *, MEM(SP) <- HI(MDR); SP--
+	7, *, MDR <- MAR					// store SP
+	8, *, MEM(SP) <- LO(MDR); SP--
+	9, *, MEM(SP) <- HI(MDR); SP--
+	10, *, MEM(SP) <- LO(A); SP--		// store A
+	11, *, MEM(SP) <- HI(A); SP--
+	12, *, MEM(SP) <- LO(X); SP--		// store X
+	13, *, MEM(SP) <- HI(X); SP--	
+	14, *, MEM(SP) <- LO(Y); SP--		// store Y
+	15, *, MEM(SP) <- HI(Y); SP--	
+	16, *, MDR <- DP					// store DP
+	17, *, MEM(SP) <- LO(MDR); SP--
+	18, *, MEM(SP) <- HI(MDR); SP--	
+	19, *, MEM(SP) <- LO(PPC); SP--		// store previousPC (the instruction's starting address)
+	20, *, MEM(SP) <- HI(PPC);
+	21, *, MAR <- IPTR					// jump to ISR (IPTR contains the fault/IRQ number)
+	22, *, HI(MDR) <- MEM(MAR); MAR++
+	23, *, LO(MDR) <- MEM(MAR)
+	24, *, PC <- MDR					
+	25, *, fetch
+endop

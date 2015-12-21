@@ -1,0 +1,9 @@
+BYTEC/16 binutils - Assembler, Linker
+
+Release 2013-12-16
+
+Compatible with ISA & microcode ver. 1.6
+
+This software is part of BYTEC/16 Homebuilt Computer Project <http://www.pilawa.org/computer>
+Copyright 2010, 2011, 2012, 2013 Dawid Pilawa <dpilawa(at)gmail(dot)com>
+Contains portions of Minix code
