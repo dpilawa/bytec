@@ -13446,7 +13446,7 @@ Based on the following sources:
 <sheet>
 <plain>
 <text x="111.76" y="-111.76" size="2.54" layer="97" font="vector">Control (MSW, ALU flags)</text>
-<text x="208.28" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">1.5</text>
+<text x="208.28" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
 <text x="208.28" y="-106.68" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
 <text x="208.28" y="-111.76" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
 <text x="193.04" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">CPU.3</text>
@@ -14252,7 +14252,7 @@ Based on the following sources:
 <pinref part="IC12" gate="A" pin="Q"/>
 </segment>
 </net>
-<net name="F6" class="0">
+<net name="/FP" class="0">
 <segment>
 <wire x1="-7.62" y1="71.12" x2="-5.08" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="-5.08" y1="73.66" x2="7.62" y2="73.66" width="0.1524" layer="91"/>
