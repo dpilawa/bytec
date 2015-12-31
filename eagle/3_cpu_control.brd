@@ -5586,6 +5586,15 @@ design rules under a new name.</description>
 <signal name="LBUS13">
 <contactref element="JP5" pad="4"/>
 </signal>
+<signal name="/WR_FAULT">
+<contactref element="JP10" pad="33"/>
+</signal>
+<signal name="/NP_FAULT">
+<contactref element="JP10" pad="36"/>
+</signal>
+<signal name="/IO">
+<contactref element="JP10" pad="35"/>
+</signal>
 </signals>
 </board>
 </drawing>

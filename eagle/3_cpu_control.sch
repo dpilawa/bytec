@@ -15402,7 +15402,7 @@ Based on the following sources:
 <sheet>
 <plain>
 <text x="289.56" y="27.94" size="2.54" layer="97" font="vector">Control (MSW, ALU flags)</text>
-<text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">1.5</text>
+<text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
 <text x="386.08" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
 <text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
 <text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.3</text>
@@ -16659,6 +16659,27 @@ Based on the following sources:
 <pinref part="JP10" gate="A" pin="34"/>
 <wire x1="91.44" y1="111.76" x2="101.6" y2="111.76" width="0.1524" layer="91"/>
 <label x="101.6" y="111.76" size="1.27" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="/WR_FAULT" class="0">
+<segment>
+<pinref part="JP10" gate="A" pin="33"/>
+<wire x1="83.82" y1="111.76" x2="73.66" y2="111.76" width="0.1524" layer="91"/>
+<label x="73.66" y="111.76" size="1.27" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="/NP_FAULT" class="0">
+<segment>
+<pinref part="JP10" gate="A" pin="36"/>
+<wire x1="91.44" y1="109.22" x2="101.6" y2="109.22" width="0.1524" layer="91"/>
+<label x="101.6" y="109.22" size="1.27" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="/IO" class="0">
+<segment>
+<pinref part="JP10" gate="A" pin="35"/>
+<wire x1="83.82" y1="109.22" x2="73.66" y2="109.22" width="0.1524" layer="91"/>
+<label x="73.66" y="109.22" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
