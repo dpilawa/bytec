@@ -18388,6 +18388,16 @@ Grid 5.00 mm&lt;p&gt;
 <label x="132.08" y="50.8" size="1.778" layer="95" rot="R180"/>
 </segment>
 </bus>
+<bus name="PABUS[12..21]">
+<segment>
+<wire x1="132.08" y1="78.74" x2="134.62" y2="78.74" width="0.762" layer="92"/>
+<wire x1="134.62" y1="78.74" x2="134.62" y2="66.04" width="0.762" layer="92"/>
+</segment>
+<segment>
+<wire x1="187.96" y1="78.74" x2="190.5" y2="78.74" width="0.762" layer="92"/>
+<wire x1="190.5" y1="78.74" x2="190.5" y2="66.04" width="0.762" layer="92"/>
+</segment>
+</bus>
 </busses>
 <nets>
 <net name="/ALUHI2MEM" class="0">
@@ -20464,6 +20474,87 @@ Grid 5.00 mm&lt;p&gt;
 <label x="383.54" y="243.84" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
+<net name="PABUS12" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="C15"/>
+<wire x1="190.5" y1="76.2" x2="187.96" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="73.66" x2="172.72" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="73.66" x2="172.72" y2="73.66" width="0.1524" layer="91"/>
+<label x="175.26" y="73.66" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS14" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="C16"/>
+<wire x1="190.5" y1="73.66" x2="187.96" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="71.12" x2="170.18" y2="71.12" width="0.1524" layer="91"/>
+<label x="175.26" y="71.12" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS13" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="A15"/>
+<wire x1="134.62" y1="76.2" x2="137.16" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="73.66" x2="149.86" y2="73.66" width="0.1524" layer="91"/>
+<label x="137.16" y="73.66" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS15" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="A16"/>
+<wire x1="134.62" y1="73.66" x2="137.16" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="71.12" x2="149.86" y2="71.12" width="0.1524" layer="91"/>
+<label x="137.16" y="71.12" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS16" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="C17"/>
+<wire x1="190.5" y1="71.12" x2="187.96" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="68.58" x2="170.18" y2="68.58" width="0.1524" layer="91"/>
+<label x="175.26" y="68.58" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS18" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="C18"/>
+<wire x1="190.5" y1="68.58" x2="187.96" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="66.04" x2="170.18" y2="66.04" width="0.1524" layer="91"/>
+<label x="175.26" y="66.04" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS20" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="C19"/>
+<wire x1="190.5" y1="66.04" x2="187.96" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="187.96" y1="63.5" x2="170.18" y2="63.5" width="0.1524" layer="91"/>
+<label x="175.26" y="63.5" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS17" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="A17"/>
+<wire x1="134.62" y1="71.12" x2="137.16" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="68.58" x2="149.86" y2="68.58" width="0.1524" layer="91"/>
+<label x="137.16" y="68.58" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS19" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="A18"/>
+<wire x1="134.62" y1="68.58" x2="137.16" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="66.04" x2="149.86" y2="66.04" width="0.1524" layer="91"/>
+<label x="137.16" y="66.04" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS21" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="A19"/>
+<wire x1="134.62" y1="66.04" x2="137.16" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="63.5" x2="149.86" y2="63.5" width="0.1524" layer="91"/>
+<label x="137.16" y="63.5" size="1.778" layer="95"/>
+</segment>
+</net>
 </nets>
 </sheet>
 <sheet>
@@ -20516,6 +20607,7 @@ Grid 5.00 mm&lt;p&gt;
 <wire x1="132.08" y1="200.66" x2="132.08" y2="172.72" width="0.762" layer="92"/>
 <wire x1="132.08" y1="172.72" x2="180.34" y2="172.72" width="0.762" layer="92"/>
 <wire x1="180.34" y1="172.72" x2="180.34" y2="198.12" width="0.762" layer="92"/>
+<label x="116.84" y="198.12" size="1.778" layer="95"/>
 </segment>
 </bus>
 <bus name="IRQ[0..7]">
@@ -20532,6 +20624,15 @@ Grid 5.00 mm&lt;p&gt;
 <wire x1="66.04" y1="172.72" x2="109.22" y2="172.72" width="0.762" layer="92"/>
 <wire x1="109.22" y1="172.72" x2="109.22" y2="198.12" width="0.762" layer="92"/>
 <label x="63.5" y="200.66" size="1.778" layer="95" rot="R180"/>
+</segment>
+</bus>
+<bus name="PABUS[12..21]">
+<segment>
+<wire x1="129.54" y1="157.48" x2="132.08" y2="157.48" width="0.762" layer="92"/>
+<wire x1="132.08" y1="157.48" x2="132.08" y2="137.16" width="0.762" layer="92"/>
+<wire x1="132.08" y1="137.16" x2="180.34" y2="137.16" width="0.762" layer="92"/>
+<wire x1="180.34" y1="137.16" x2="180.34" y2="154.94" width="0.762" layer="92"/>
+<label x="114.3" y="154.94" size="1.778" layer="95"/>
 </segment>
 </bus>
 </busses>
@@ -21374,6 +21475,86 @@ Grid 5.00 mm&lt;p&gt;
 <pinref part="JP10" gate="A" pin="35"/>
 <wire x1="83.82" y1="109.22" x2="73.66" y2="109.22" width="0.1524" layer="91"/>
 <label x="73.66" y="109.22" size="1.27" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="PABUS12" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="1"/>
+<wire x1="132.08" y1="154.94" x2="134.62" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="152.4" x2="152.4" y2="152.4" width="0.1524" layer="91"/>
+<label x="134.62" y="152.4" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS13" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="2"/>
+<wire x1="180.34" y1="154.94" x2="177.8" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="152.4" x2="160.02" y2="152.4" width="0.1524" layer="91"/>
+<label x="165.1" y="152.4" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS14" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="3"/>
+<wire x1="132.08" y1="152.4" x2="134.62" y2="149.86" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="149.86" x2="152.4" y2="149.86" width="0.1524" layer="91"/>
+<label x="134.62" y="149.86" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS15" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="4"/>
+<wire x1="180.34" y1="152.4" x2="177.8" y2="149.86" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="149.86" x2="160.02" y2="149.86" width="0.1524" layer="91"/>
+<label x="165.1" y="149.86" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS16" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="5"/>
+<wire x1="132.08" y1="149.86" x2="134.62" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="147.32" x2="152.4" y2="147.32" width="0.1524" layer="91"/>
+<label x="134.62" y="147.32" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS18" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="7"/>
+<wire x1="132.08" y1="147.32" x2="134.62" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="144.78" x2="152.4" y2="144.78" width="0.1524" layer="91"/>
+<label x="134.62" y="144.78" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS20" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="9"/>
+<wire x1="132.08" y1="144.78" x2="134.62" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="142.24" x2="152.4" y2="142.24" width="0.1524" layer="91"/>
+<label x="134.62" y="142.24" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS17" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="6"/>
+<wire x1="180.34" y1="149.86" x2="177.8" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="147.32" x2="160.02" y2="147.32" width="0.1524" layer="91"/>
+<label x="165.1" y="147.32" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS19" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="8"/>
+<wire x1="180.34" y1="147.32" x2="177.8" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="144.78" x2="160.02" y2="144.78" width="0.1524" layer="91"/>
+<label x="165.1" y="144.78" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PABUS21" class="0">
+<segment>
+<pinref part="JP5" gate="A" pin="10"/>
+<wire x1="180.34" y1="144.78" x2="177.8" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="142.24" x2="160.02" y2="142.24" width="0.1524" layer="91"/>
+<label x="165.1" y="142.24" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
