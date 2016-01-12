@@ -20446,20 +20446,6 @@ Grid 5.00 mm&lt;p&gt;
 <label x="134.62" y="83.82" size="1.4224" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="/ENMEM" class="0">
-<segment>
-<pinref part="J1" gate="G$1" pin="C22"/>
-<wire x1="170.18" y1="55.88" x2="187.96" y2="55.88" width="0.1524" layer="91"/>
-<label x="187.96" y="55.88" size="1.4224" layer="95" xref="yes"/>
-</segment>
-</net>
-<net name="/LDMEM" class="0">
-<segment>
-<pinref part="J1" gate="G$1" pin="A22"/>
-<wire x1="149.86" y1="55.88" x2="137.16" y2="55.88" width="0.1524" layer="91"/>
-<label x="137.16" y="55.88" size="1.4224" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="MEMSEG" class="0">
 <segment>
 <pinref part="J1" gate="G$1" pin="A21"/>
@@ -20553,6 +20539,20 @@ Grid 5.00 mm&lt;p&gt;
 <wire x1="134.62" y1="66.04" x2="137.16" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="137.16" y1="63.5" x2="149.86" y2="63.5" width="0.1524" layer="91"/>
 <label x="137.16" y="63.5" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="/LDMEMX" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="A22"/>
+<wire x1="149.86" y1="55.88" x2="137.16" y2="55.88" width="0.1524" layer="91"/>
+<label x="137.16" y="55.88" size="1.4224" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="/ENMEMX" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="C22"/>
+<wire x1="170.18" y1="55.88" x2="187.96" y2="55.88" width="0.1524" layer="91"/>
+<label x="187.96" y="55.88" size="1.4224" layer="95" xref="yes"/>
 </segment>
 </net>
 </nets>

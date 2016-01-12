@@ -14326,6 +14326,7 @@ Based on the following sources:
 <wire x1="-7.62" y1="-17.78" x2="-5.08" y2="-15.24" width="0.1524" layer="91"/>
 <wire x1="-5.08" y1="-15.24" x2="25.4" y2="-15.24" width="0.1524" layer="91"/>
 <label x="30.48" y="-15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
+<label x="-5.08" y="-15.24" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="F7" class="0">
