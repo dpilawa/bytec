@@ -1342,9 +1342,6 @@ design rules under a new name.</description>
 <signal name="/INCPC">
 <contactref element="JP10" pad="1"/>
 </signal>
-<signal name="/LDPPC">
-<contactref element="JP10" pad="11"/>
-</signal>
 <signal name="PROT">
 <contactref element="JP10" pad="21"/>
 </signal>

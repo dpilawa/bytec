@@ -13943,13 +13943,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <label x="101.6" y="137.16" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="/LDPPC" class="0">
-<segment>
-<pinref part="JP10" gate="A" pin="11"/>
-<wire x1="83.82" y1="139.7" x2="73.66" y2="139.7" width="0.1524" layer="91"/>
-<label x="73.66" y="139.7" size="1.27" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="BUSCLKA" class="0">
 <segment>
 <pinref part="JP10" gate="A" pin="23"/>
@@ -14123,13 +14116,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="73.66" y1="45.72" x2="83.82" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="JP9" gate="A" pin="41"/>
 <label x="73.66" y="45.72" size="1.27" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="/ENPPC" class="0">
-<segment>
-<wire x1="83.82" y1="50.8" x2="73.66" y2="50.8" width="0.1524" layer="91"/>
-<pinref part="JP9" gate="A" pin="37"/>
-<label x="73.66" y="50.8" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="/ENDP" class="0">

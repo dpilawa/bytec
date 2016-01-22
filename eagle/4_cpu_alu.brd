@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="6.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -4694,9 +4694,6 @@ design rules under a new name.</description>
 </signal>
 <signal name="/INCPC">
 <contactref element="JP10" pad="1"/>
-</signal>
-<signal name="/LDPPC">
-<contactref element="JP10" pad="11"/>
 </signal>
 <signal name="BUSCLKA">
 <contactref element="JP10" pad="23"/>

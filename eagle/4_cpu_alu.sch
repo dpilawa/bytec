@@ -15135,13 +15135,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <label x="73.66" y="152.4" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="/LDPPC" class="0">
-<segment>
-<pinref part="JP10" gate="A" pin="11"/>
-<wire x1="83.82" y1="139.7" x2="73.66" y2="139.7" width="0.1524" layer="91"/>
-<label x="73.66" y="139.7" size="1.27" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="BUSCLKA" class="0">
 <segment>
 <pinref part="JP10" gate="A" pin="23"/>

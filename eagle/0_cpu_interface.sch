@@ -21407,13 +21407,6 @@ Grid 5.00 mm&lt;p&gt;
 <label x="73.66" y="152.4" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="/LDPPC" class="0">
-<segment>
-<wire x1="83.82" y1="139.7" x2="73.66" y2="139.7" width="0.1524" layer="91"/>
-<pinref part="JP10" gate="A" pin="11"/>
-<label x="73.66" y="139.7" size="1.27" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="PROT" class="0">
 <segment>
 <wire x1="83.82" y1="127" x2="73.66" y2="127" width="0.1524" layer="91"/>
