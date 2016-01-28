@@ -2,7 +2,7 @@
  * 
  *    tokens.h - this file is part of Microcode Assembler
  *   
- *    Copyright 2009, 2010, 2011 Dawid Pilawa
+ *    Copyright 2009, 2010, 2011, 2016 Dawid Pilawa
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -39,11 +39,9 @@ enum token {
     X,
     Y,
     MDR,
-    PC,
-    PPC,    
+    PC,   
     DP,
     SP,
-    USP,
     MAR,
     IR,
     MSW,
@@ -90,6 +88,7 @@ enum token {
     
     // misc
     FETCH,
+	IRET,
     CODE,
     DATA,
     SUPERVISOR,

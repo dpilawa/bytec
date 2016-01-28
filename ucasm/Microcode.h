@@ -2,7 +2,7 @@
  * 
  *    Microcode.h - this file is part of Microcode Assembler
  *   
- *    Copyright 2009, 2010, 2011 Dawid Pilawa
+ *    Copyright 2009, 2010, 2011, 2016 Dawid Pilawa
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@
  */
 
 // LBUS(2) : MDR, A, X, Y
-// RBUS(3) : MDR, MSW, ABUS, IPTR, PPC, nc, nc, nc
+// RBUS(2) : MDR, MSW, ABUS, IPTR
+// NC(1) : not_connected
 // ADDRBUS(2) : MAR, SP, DP, PC
 // BUSIFCMODE(2) / MISC_LATCH(2) : MEM2ALULO, MEM2ALUHI, ALULO2MEM, ALUHI2MEM	/	I, S, nc, NONE (the latter when bus interface disabled)
 // BUSIFCEN(1): _enable/disable
@@ -37,7 +38,8 @@
 // SP_DIR(1) : dn/up
 // MEMSEG(1) : CODE/DATA
 // PRIVILEGED(1) : _disable/enable
-// NC(2) : not_connected
+// MEMOP(1) : _enable/disable
+// IRET(1) : _enable/disable
 
 
 namespace ucasm {
@@ -55,10 +57,6 @@ const int ucRBus_MDR			= 0x00;
 const int ucRBus_MSW			= 0x01;
 const int ucRBus_ABUS			= 0x02;
 const int ucRBus_IPTR			= 0x03;		// interrupt handler address
-const int ucRBus_PPC			= 0x04; 	// previous program counter
-const int ucRBus_nc0			= 0x05; 	// usermode stack pointer
-const int ucRBus_nc1			= 0x06;
-const int ucRBus_nc2			= 0x07;
 
 const int ucADRBus				= 5;
 const int ucADRBus_s			= 2;
@@ -200,6 +198,15 @@ const int ucSupervisor_s		= 1;
 const int ucSupervisor_Dis		= 0x00;
 const int ucSupervisor_En		= 0x01;
 
+const int ucMemOp				= 30;
+const int ucMemOp_s				= 1;
+const int ucMemOp_En			= 0x00;
+const int ucMemOp_Dis			= 0x01;
+
+const int ucIRET				= 31;
+const int ucIRET_s				= 1;
+const int ucIRET_En				= 0x00;
+const int ucIRET_Dis			= 0x01;
 
 // ROM size
 const int epromSize = 262144;

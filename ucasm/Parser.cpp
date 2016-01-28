@@ -2,7 +2,7 @@
  * 
  *    Parser.cpp - this file is part of Microcode Assembler
  *   
- *    Copyright 2009, 2010, 2011 Dawid Pilawa
+ *    Copyright 2009, 2010, 2011, 2016 Dawid Pilawa
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -343,10 +343,17 @@ void Parser::parseMicroinstructions(ifstream& s, MicrocodeWord& ucword)
 				ucword.setBits(ucADRBus, ucADRBus_PC);
 				ucword.setBits(ucLoadIR, ucLoadIR_En);
 				ucword.setBits(ucIncPC, ucIncPC_En);
+				ucword.setBits(ucMemOp, ucMemOp_En);
 				addressBus = PC;
 			}
 		}
 
+		// IRET
+		else if (accept(s, IRET))
+		{
+			ucword.setBits(ucIRET, ucIRET_En);
+		}
+		
 		// misc latch
 		else if (accept(s, LATCH_I))
 		{
@@ -592,7 +599,8 @@ void Parser::parseTransfer(ifstream& s, MicrocodeWord& ucword)
 	{
 
 		ucword.setBits(ucLoad, ucLoad_MEM);
-
+		ucword.setBits(ucMemOp, ucMemOp_En);
+		
 		if (!expect(s, LBR))
 		{
 			err("Expected (");
@@ -654,7 +662,9 @@ void Parser::parseTransfer(ifstream& s, MicrocodeWord& ucword)
 	// ? <- MEM(?);
 	if (accept(s, MEM))
 	{
-
+		
+		ucword.setBits(ucMemOp, ucMemOp_En);
+		
 		// check if left-hand-side was not mem
 		if (destToken != MEM)
 		{

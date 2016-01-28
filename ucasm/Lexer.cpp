@@ -2,7 +2,7 @@
  * 
  *    Lexer.cpp - this file is part of Microcode Assembler
  *   
- *    Copyright 2009, 2010, 2011 Dawid Pilawa
+ *    Copyright 2009, 2010, 2011, 2016 Dawid Pilawa
  * 
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -95,10 +95,8 @@ token Lexer::getToken(ifstream& f) {
 		else if (s=="Y") return Y;
 		else if (s=="MDR") return MDR;
 		else if (s=="PC") return PC;
-		else if (s=="PPC") return PPC;
 		else if (s=="DP") return DP;
 		else if (s=="SP") return SP;
-		else if (s=="USP") return USP;
 		else if (s=="MAR") return MAR;
 		else if (s=="IR") return IR;
 		else if (s=="MSW") return MSW;
@@ -122,6 +120,7 @@ token Lexer::getToken(ifstream& f) {
 		else if (s=="LATCH_I") return LATCH_I;
 		else if (s=="LATCH_S") return LATCH_S;
 		else if (s=="FETCH") return FETCH;
+		else if (s=="IRET") return IRET;
 		else if (s=="CODE") return CODE;
 		else if (s=="DATA") return DATA;
 		else if (s=="SUPERVISOR") return SUPERVISOR;
