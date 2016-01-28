@@ -867,12 +867,6 @@ void Parser::parseTransfer(ifstream& s, MicrocodeWord& ucword)
 			firstOperand = IPTR;
 			ucword.setBits(ucRBus, ucRBus_IPTR);
 		}
-		// ? <- PPC
-		else if (accept(s, PPC))
-		{
-			firstOperand = PPC;
-			ucword.setBits(ucRBus, ucRBus_PPC);
-		}
 		// 74181's constant (-1)
 		// ? <- -1
 		else if (accept(s, MINUS))
@@ -992,8 +986,7 @@ void Parser::parseTransfer(ifstream& s, MicrocodeWord& ucword)
 					ucword.setBits(ucALUCarry, ucALUCarry_NC);
 				}
 			}
-			else if (unaryOperand == MAR || unaryOperand == SP || unaryOperand == DP || unaryOperand == PC || unaryOperand == MSW ||
-					 unaryOperand == IPTR || unaryOperand == PPC)
+			else if (unaryOperand == MAR || unaryOperand == SP || unaryOperand == DP || unaryOperand == PC || unaryOperand == MSW || unaryOperand == IPTR)
 			{
 				if (!unary_minus_1)
 				{
@@ -1012,7 +1005,7 @@ void Parser::parseTransfer(ifstream& s, MicrocodeWord& ucword)
 			}
 			else
 			{
-				err("Invalid unary right-hand-side. Should be one of MDR, A, X, Y, MAR, SP, DP, PC, MSW, IPTR, PPC.");
+				err("Invalid unary right-hand-side. Should be one of MDR, A, X, Y, MAR, SP, DP, PC, MSW, IPTR.");
 			}
 
 		}
@@ -1020,10 +1013,9 @@ void Parser::parseTransfer(ifstream& s, MicrocodeWord& ucword)
 		else
 		{
 			// check for left operands that cannot be left operands
-			if (firstOperand==MAR || firstOperand==SP || firstOperand==DP || firstOperand==PC || firstOperand==MSW ||
-				firstOperand==IPTR || firstOperand==PPC)
+			if (firstOperand==MAR || firstOperand==SP || firstOperand==DP || firstOperand==PC || firstOperand==MSW || firstOperand==IPTR)
 			{
-				err("MAR, SP, DP, PC, MSW, IPTR, PPC cannot be left operands");
+				err("MAR, SP, DP, PC, MSW, IPTR cannot be left operands");
 			}
 
 			// parse right operand (process only if not unary)
@@ -1089,11 +1081,6 @@ void Parser::parseTransfer(ifstream& s, MicrocodeWord& ucword)
 			else if (accept(s, IPTR))
 			{
 				ucword.setBits(ucRBus, ucRBus_IPTR);
-			}
-			// ? <- [HI(|LO(] ? op PPC [)]
-			else if (accept(s, PPC))
-			{
-				ucword.setBits(ucRBus, ucRBus_PPC);
 			}
 			else // A or X or Y (special case - they are not tied to the right bus but there is a special ALU code to help)
 			{
