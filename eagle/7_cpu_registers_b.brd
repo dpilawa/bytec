@@ -930,7 +930,7 @@
 <text x="86.4235" y="54.229" size="1.27" layer="121" font="vector" ratio="16">74LS569</text>
 <text x="55.626" y="54.229" size="1.27" layer="121" font="vector" ratio="16">74LS569</text>
 <text x="24.8285" y="54.229" size="1.27" layer="121" font="vector" ratio="16">74LS569</text>
-<text x="7.3025" y="22.5425" size="3.81" layer="1" font="vector" ratio="15">#6</text>
+<text x="7.3025" y="22.5425" size="3.81" layer="1" font="vector" ratio="15">#7</text>
 <circle x="165.1" y="-4.7625" radius="2.159" width="0.2032" layer="100"/>
 <wire x1="165.1" y1="0" x2="165.1" y2="-9.525" width="0.2032" layer="100"/>
 <wire x1="160.3375" y1="-4.7625" x2="169.8625" y2="-4.7625" width="0.2032" layer="100"/>

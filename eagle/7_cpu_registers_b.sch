@@ -11058,7 +11058,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="289.56" y="27.94" size="2.54" layer="97" font="vector">Registers (MAR,PC,KSP,SP)</text>
 <text x="386.08" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
 <text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
-<text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.5</text>
+<text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.7</text>
 <text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">1.5</text>
 </plain>
 <instances>
@@ -13248,7 +13248,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="289.56" y="27.94" size="2.54" layer="97" font="vector">Registers (MAR,PC,KSP,SP)</text>
 <text x="386.08" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
 <text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
-<text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.5</text>
+<text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.7</text>
 <text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">1.5</text>
 <text x="10.16" y="246.38" size="6.4516" layer="91">BOARD CONNECTORS</text>
 </plain>

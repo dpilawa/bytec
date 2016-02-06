@@ -957,7 +957,7 @@
 <text x="113.284" y="57.404" size="1.27" layer="121" font="vector" ratio="16" rot="R270">74LS374N</text>
 <text x="76.581" y="16.8275" size="1.27" layer="121" font="vector" ratio="16" rot="R180">74LS08N</text>
 <text x="100.2665" y="15.875" size="1.27" layer="121" font="vector" ratio="16">74LS32N</text>
-<text x="147.0025" y="86.6775" size="3.81" layer="1" font="vector" ratio="15">#5</text>
+<text x="147.0025" y="86.6775" size="3.81" layer="1" font="vector" ratio="15">#6</text>
 </plain>
 <libraries>
 <library name="74xx-eu">

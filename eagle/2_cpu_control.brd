@@ -79,7 +79,7 @@
 <circle x="157.1625" y="94.615" radius="2.286" width="0" layer="42"/>
 <circle x="157.1625" y="5.715" radius="2.286" width="0" layer="42"/>
 <circle x="3.4925" y="5.715" radius="2.286" width="0" layer="42"/>
-<text x="146.3675" y="93.0275" size="3.81" layer="1" font="vector" ratio="15">#1</text>
+<text x="146.3675" y="93.0275" size="3.81" layer="1" font="vector" ratio="15">#2</text>
 <wire x1="68.707" y1="19.939" x2="69.215" y2="19.431" width="0.254" layer="121" curve="90"/>
 <wire x1="70.485" y1="19.431" x2="70.993" y2="19.939" width="0.254" layer="121" curve="90"/>
 <wire x1="68.707" y1="23.241" x2="68.707" y2="19.939" width="0.254" layer="121"/>

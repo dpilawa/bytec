@@ -897,7 +897,7 @@
 <wire x1="0" y1="-4.7625" x2="-9.525" y2="-4.7625" width="0.2032" layer="100"/>
 <wire x1="-4.7625" y1="100.0125" x2="-4.7625" y2="109.5375" width="0.2032" layer="100"/>
 <wire x1="0" y1="104.775" x2="-9.525" y2="104.775" width="0.2032" layer="100"/>
-<text x="126.6825" y="91.7575" size="3.81" layer="1" font="vector" ratio="15">#4</text>
+<text x="126.6825" y="91.7575" size="3.81" layer="1" font="vector" ratio="15">#5</text>
 </plain>
 <libraries>
 <library name="74xx-eu">
