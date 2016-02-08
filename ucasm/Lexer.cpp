@@ -120,7 +120,7 @@ token Lexer::getToken(ifstream& f) {
 		else if (s=="LATCH_I") return LATCH_I;
 		else if (s=="LATCH_S") return LATCH_S;
 		else if (s=="FETCH") return FETCH;
-		else if (s=="IRET") return IRET;
+		else if (s=="FRET") return FRET;
 		else if (s=="CODE") return CODE;
 		else if (s=="DATA") return DATA;
 		else if (s=="SUPERVISOR") return SUPERVISOR;

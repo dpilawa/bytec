@@ -348,10 +348,10 @@ void Parser::parseMicroinstructions(ifstream& s, MicrocodeWord& ucword)
 			}
 		}
 
-		// IRET
-		else if (accept(s, IRET))
+		// FRET
+		else if (accept(s, FRET))
 		{
-			ucword.setBits(ucIRET, ucIRET_En);
+			ucword.setBits(ucFRET, ucFRET_En);
 		}
 		
 		// misc latch

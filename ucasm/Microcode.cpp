@@ -44,6 +44,7 @@ MicrocodeWord::MicrocodeWord()
 	ucWord = 0x00000000;
 	setBits(ucLBus, ucLBus_MDR);
 	setBits(ucRBus, ucRBus_MDR);
+	setBits(ucFRET, ucFRET_Dis);
 	setBits(ucADRBus, ucADRBus_PC);
 	// setBits(ucBusIfcMode, ucBusIfcMode_ALULO2MEM);
 	setBits(ucMiscLatch, ucMiscLatch_None);
@@ -62,7 +63,6 @@ MicrocodeWord::MicrocodeWord()
 	setBits(ucMemSeg, ucMemSeg_Code);
 	setBits(ucSupervisor, ucSupervisor_Dis);
 	setBits(ucMemOp, ucMemOp_Dis);
-	setBits(ucIRET, ucIRET_Dis);
 }
 
 /**************************************************************
@@ -102,6 +102,9 @@ void MicrocodeWord::setBits(int pos, int val)
 		case ucRBus:
 			size = ucRBus_s;
 			break;
+		case ucFRET:
+			size = ucFRET_s;
+			break;			
 		case ucADRBus:
 			size = ucADRBus_s;
 			break;
@@ -150,6 +153,9 @@ void MicrocodeWord::setBits(int pos, int val)
 		case ucSupervisor:
 			size = ucSupervisor_s;
 			break;
+		case ucMemOp:
+			size = ucMemOp_s;
+			break;	
 	}
 
 	left = 0xFFFFFFFF;

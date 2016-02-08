@@ -21,7 +21,7 @@
 
 // LBUS(2) : MDR, A, X, Y
 // RBUS(2) : MDR, MSW, ABUS, IPTR
-// NC(1) : not_connected
+// FRET(1) : _enable/disable
 // ADDRBUS(2) : MAR, SP, DP, PC
 // BUSIFCMODE(2) / MISC_LATCH(2) : MEM2ALULO, MEM2ALUHI, ALULO2MEM, ALUHI2MEM	/	I, S, nc, NONE (the latter when bus interface disabled)
 // BUSIFCEN(1): _enable/disable
@@ -39,7 +39,7 @@
 // MEMSEG(1) : CODE/DATA
 // PRIVILEGED(1) : _disable/enable
 // MEMOP(1) : _enable/disable
-// IRET(1) : _enable/disable
+// NC(1) : not_connected
 
 
 namespace ucasm {
@@ -52,11 +52,16 @@ const int ucLBus_X				= 0x02;
 const int ucLBus_Y				= 0x03;
 
 const int ucRBus				= 2;
-const int ucRBus_s				= 3;
+const int ucRBus_s				= 2;
 const int ucRBus_MDR			= 0x00;
 const int ucRBus_MSW			= 0x01;
 const int ucRBus_ABUS			= 0x02;
 const int ucRBus_IPTR			= 0x03;		// interrupt handler address
+
+const int ucFRET				= 4;
+const int ucFRET_s				= 1;
+const int ucFRET_En				= 0x00;
+const int ucFRET_Dis			= 0x01;
 
 const int ucADRBus				= 5;
 const int ucADRBus_s			= 2;
@@ -202,11 +207,6 @@ const int ucMemOp				= 30;
 const int ucMemOp_s				= 1;
 const int ucMemOp_En			= 0x00;
 const int ucMemOp_Dis			= 0x01;
-
-const int ucIRET				= 31;
-const int ucIRET_s				= 1;
-const int ucIRET_En				= 0x00;
-const int ucIRET_Dis			= 0x01;
 
 // ROM size
 const int epromSize = 262144;

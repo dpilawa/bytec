@@ -88,7 +88,7 @@ enum token {
     
     // misc
     FETCH,
-	IRET,
+	FRET,
     CODE,
     DATA,
     SUPERVISOR,
