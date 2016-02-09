@@ -12156,7 +12156,10 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="35.56" y1="205.74" x2="35.56" y2="203.2" width="0.1524" layer="91"/>
 <pinref part="SUPPLY1" gate="GND" pin="GND"/>
 <pinref part="IC16" gate="A" pin="ENT"/>
-<wire x1="35.56" y1="203.2" x2="35.56" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="203.2" x2="35.56" y2="180.34" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="180.34" x2="35.56" y2="177.8" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="177.8" x2="35.56" y2="175.26" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="175.26" x2="35.56" y2="167.64" width="0.1524" layer="91"/>
 <wire x1="35.56" y1="167.64" x2="35.56" y2="165.1" width="0.1524" layer="91"/>
 <wire x1="35.56" y1="165.1" x2="35.56" y2="157.48" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="203.2" x2="35.56" y2="203.2" width="0.1524" layer="91"/>
@@ -12167,6 +12170,15 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <junction x="35.56" y="165.1"/>
 <junction x="35.56" y="167.64"/>
 <junction x="35.56" y="203.2"/>
+<pinref part="IC15" gate="A" pin="B"/>
+<wire x1="38.1" y1="180.34" x2="35.56" y2="180.34" width="0.1524" layer="91"/>
+<pinref part="IC15" gate="A" pin="C"/>
+<wire x1="38.1" y1="177.8" x2="35.56" y2="177.8" width="0.1524" layer="91"/>
+<pinref part="IC15" gate="A" pin="D"/>
+<wire x1="38.1" y1="175.26" x2="35.56" y2="175.26" width="0.1524" layer="91"/>
+<junction x="35.56" y="175.26"/>
+<junction x="35.56" y="177.8"/>
+<junction x="35.56" y="180.34"/>
 </segment>
 <segment>
 <pinref part="SUPPLY11" gate="GND" pin="GND"/>
