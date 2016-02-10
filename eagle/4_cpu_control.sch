@@ -13503,7 +13503,7 @@ Based on the following sources:
 <text x="208.28" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
 <text x="208.28" y="-106.68" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
 <text x="208.28" y="-111.76" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
-<text x="193.04" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">CPU.3</text>
+<text x="193.04" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">CPU.4</text>
 </plain>
 <instances>
 <instance part="IC11" gate="A" x="-43.18" y="60.96"/>
@@ -15406,7 +15406,7 @@ Based on the following sources:
 <text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
 <text x="386.08" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
 <text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
-<text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.3</text>
+<text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.4</text>
 <text x="10.16" y="246.38" size="6.4516" layer="91">BOARD CONNECTORS</text>
 </plain>
 <instances>
@@ -16478,13 +16478,6 @@ Based on the following sources:
 <wire x1="73.66" y1="45.72" x2="83.82" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="JP9" gate="A" pin="41"/>
 <label x="73.66" y="45.72" size="1.27" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="/ENPPC" class="0">
-<segment>
-<wire x1="83.82" y1="50.8" x2="73.66" y2="50.8" width="0.1524" layer="91"/>
-<pinref part="JP9" gate="A" pin="37"/>
-<label x="73.66" y="50.8" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="/ENMAR" class="0">
