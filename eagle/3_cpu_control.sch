@@ -17360,13 +17360,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <pinref part="JP9" gate="A" pin="41"/>
 </segment>
 </net>
-<net name="/ENPPC" class="0">
-<segment>
-<wire x1="83.82" y1="50.8" x2="73.66" y2="50.8" width="0.1524" layer="91"/>
-<label x="73.66" y="50.8" size="1.27" layer="95" rot="R180" xref="yes"/>
-<pinref part="JP9" gate="A" pin="37"/>
-</segment>
-</net>
 <net name="/ENMAR" class="0">
 <segment>
 <wire x1="91.44" y1="38.1" x2="101.6" y2="38.1" width="0.1524" layer="91"/>
