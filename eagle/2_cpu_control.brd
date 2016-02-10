@@ -981,7 +981,7 @@
 <text x="59.8805" y="81.915" size="1.27" layer="121" font="vector" ratio="16" rot="R180">74LS148N</text>
 <text x="47.117" y="40.005" size="1.27" layer="121" font="vector" ratio="16">74LS148N</text>
 <text x="46.609" y="55.245" size="1.27" layer="121" font="vector" ratio="16">74LS08N</text>
-<text x="85.979" y="22.225" size="1.27" layer="121" font="vector" ratio="16">74S32N</text>
+<text x="85.979" y="22.225" size="1.27" layer="121" font="vector" ratio="16">74LS32N</text>
 <text x="75.057" y="55.245" size="1.27" layer="121" font="vector" ratio="16">74LS173N</text>
 <text x="111.379" y="86.614" size="1.27" layer="121" font="vector" ratio="16" rot="R270">74LS273N</text>
 <text x="101.219" y="55.245" size="1.27" layer="121" font="vector" ratio="16">74LS74N</text>
@@ -1848,7 +1848,7 @@ design rules under a new name.</description>
 <element name="IC1" library="74xx-eu" package="DIL14" value="74LS08N" x="58.42" y="25.0825" rot="R180"/>
 <element name="IC12" library="74xx-eu" package="DIL14" value="74LS74N" x="107.95" y="55.88"/>
 <element name="IC4" library="74xx-eu" package="DIL14" value="74LS00N" x="119.38" y="22.86" rot="R180"/>
-<element name="IC9" library="74xx-eu" package="DIL14" value="74S32N" x="92.71" y="22.86"/>
+<element name="IC9" library="74xx-eu" package="DIL14" value="74LS32N" x="92.71" y="22.86"/>
 <element name="RN1" library="resistor-sil" package="SIL9" value="4.7k" x="149.86" y="74.295" rot="R90"/>
 <element name="IC8" library="74xx-eu" package="DIL14" value="74LS08N" x="53.34" y="55.88"/>
 <element name="IC5" library="74xx-eu" package="DIL20" value="74LS273N" x="85.09" y="81.28"/>

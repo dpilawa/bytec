@@ -13502,7 +13502,7 @@ Based on the following sources:
 <text x="111.76" y="-111.76" size="2.54" layer="97" font="vector">Control (MSW, ALU flags)</text>
 <text x="208.28" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
 <text x="208.28" y="-106.68" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
-<text x="208.28" y="-111.76" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
+<text x="208.28" y="-111.76" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2016</text>
 <text x="193.04" y="-129.54" size="2.54" layer="97" font="vector" rot="R180">CPU.4</text>
 </plain>
 <instances>
@@ -15405,7 +15405,7 @@ Based on the following sources:
 <text x="289.56" y="27.94" size="2.54" layer="97" font="vector">Control (MSW, ALU flags)</text>
 <text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
 <text x="386.08" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
-<text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2014</text>
+<text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2016</text>
 <text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.4</text>
 <text x="10.16" y="246.38" size="6.4516" layer="91">BOARD CONNECTORS</text>
 </plain>
@@ -16667,6 +16667,13 @@ Based on the following sources:
 <pinref part="JP10" gate="A" pin="35"/>
 <wire x1="83.82" y1="109.22" x2="73.66" y2="109.22" width="0.1524" layer="91"/>
 <label x="73.66" y="109.22" size="1.27" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="/MEMOP" class="0">
+<segment>
+<pinref part="JP10" gate="A" pin="11"/>
+<wire x1="83.82" y1="139.7" x2="73.66" y2="139.7" width="0.1524" layer="91"/>
+<label x="73.66" y="139.7" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>

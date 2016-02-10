@@ -11743,7 +11743,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <part name="IC12" library="74xx-eu" deviceset="74*74" device="N" technology="LS"/>
 <part name="SUPPLY5" library="supply2" deviceset="GND" device=""/>
 <part name="IC4" library="74xx-eu" deviceset="74*00" device="N" technology="LS"/>
-<part name="IC9" library="74xx-eu" deviceset="74*32" device="N" technology="S"/>
+<part name="IC9" library="74xx-eu" deviceset="74*32" device="N" technology="LS" value="74LS32N"/>
 <part name="SUPPLY18" library="supply2" deviceset="+5V" device=""/>
 <part name="RN1" library="resistor-sil" deviceset="G08R" device="" value="4.7k"/>
 <part name="SUPPLY21" library="supply2" deviceset="+5V" device=""/>
