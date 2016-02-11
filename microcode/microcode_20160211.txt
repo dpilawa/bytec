@@ -1,5 +1,5 @@
 //
-// BYTEC/16 CPU Microcode v2.0 (January 28, 2016)
+// BYTEC/16 CPU Microcode v2.0 (February 11, 2016)
 // Compatible with CPU v2.0
 // Copyright (C) 2009, 2010, 2011, 2012, 2013, 2016 Dawid Pilawa
 //
@@ -15,12 +15,26 @@ op($00)
     0, *, fetch
 endop
 
-// HALT
-// halt the machine; fetch self
+// FRET
+// return from fault
 op($01)
-    0, *, MDR <- PC
-    1, *, PC <- MDR - 1
-    2, *, fetch
+    0, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore PC
+    1, *,  LO(MDR) <- MEM(SP); DATA; SP++
+    2, *,  PC <- MDR
+    3, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore DP
+    4, *,  LO(MDR) <- MEM(SP); DATA; SP++
+    5, *,  DP <- MDR
+    6, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore Y
+    7, *,  LO(MDR) <- MEM(SP); DATA; SP++
+    8, *,  Y <- MDR
+    9, *,  HI(MDR) <- MEM(SP); DATA; SP++         // restore X
+    10, *, LO(MDR) <- MEM(SP); DATA; SP++
+    11, *, X <- MDR
+    12, *, HI(A) <- MEM(SP); DATA; SP++           // restore A
+    13, *, LO(A) <- MEM(SP); DATA; SP++
+    14, *, LO(MDR) <- MEM(SP); DATA; SP++         // restore MSW value (but not yet set MSW)
+    15, *, MSW <- MDR                             // restore machine status word (CPU mode, etc.)
+    16, *, FRET, fetch                         	  // fetch with FRET flag (to return to a specific instruction step)
 endop
 
 // MOV A, X
@@ -288,7 +302,7 @@ op($23)
     13, *, LO(A) <- MEM(SP); DATA; SP++
     14, *, LO(MDR) <- MEM(SP); DATA; SP++         // restore MSW value (but not yet set MSW)
     15, *, MSW <- MDR                             // restore machine status word (CPU mode, etc.)
-    16, *, IRET, fetch                            // fetch with IRET flag (to return to specific instruction step if returning from fault)
+    16, *, fetch
 endop
 
 // CALL A
