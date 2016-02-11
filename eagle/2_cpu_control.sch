@@ -11806,8 +11806,8 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <plain>
 <text x="289.56" y="27.94" size="2.54" layer="97" font="vector">Control (microcode sequencer)</text>
 <text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
-<text x="383.54" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
-<text x="383.54" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2016</text>
+<text x="386.08" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
+<text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2016</text>
 <text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.2</text>
 </plain>
 <instances>
@@ -13464,8 +13464,8 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <plain>
 <text x="289.56" y="27.94" size="2.54" layer="97" font="vector">Control (microcode sequencer)</text>
 <text x="386.08" y="10.16" size="2.54" layer="97" font="vector" rot="R180">2.0</text>
-<text x="383.54" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
-<text x="383.54" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2016</text>
+<text x="386.08" y="33.02" size="2.54" layer="97" font="vector" rot="R180">Dawid Pilawa</text>
+<text x="386.08" y="27.94" size="2.54" layer="97" font="vector" rot="R180">(C) 2010-2016</text>
 <text x="370.84" y="10.16" size="2.54" layer="97" font="vector" rot="R180">CPU.2</text>
 <text x="10.16" y="246.38" size="6.4516" layer="91">BOARD CONNECTORS</text>
 </plain>
