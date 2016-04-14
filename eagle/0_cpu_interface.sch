@@ -325,7 +325,7 @@
 <wire x1="7.62" y1="-15.24" x2="7.62" y2="15.24" width="0.4064" layer="94"/>
 <wire x1="7.62" y1="15.24" x2="-7.62" y2="15.24" width="0.4064" layer="94"/>
 <wire x1="-7.62" y1="15.24" x2="-7.62" y2="-15.24" width="0.4064" layer="94"/>
-<text x="-7.62" y="15.875" size="1.778" layer="95" font="vector">&gt;NAME</text>
+<text x="-7.62" y="15.875" size="1.778" layer="95">&gt;NAME</text>
 <text x="-7.62" y="-17.78" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="DIR" x="-12.7" y="-10.16" length="middle" direction="in"/>
 <pin name="A1" x="-12.7" y="12.7" length="middle"/>
@@ -384,7 +384,7 @@
 <wire x1="7.62" y1="-15.24" x2="7.62" y2="15.24" width="0.4064" layer="94"/>
 <wire x1="7.62" y1="15.24" x2="-7.62" y2="15.24" width="0.4064" layer="94"/>
 <wire x1="-7.62" y1="15.24" x2="-7.62" y2="-15.24" width="0.4064" layer="94"/>
-<text x="-7.62" y="15.875" size="1.778" layer="95" font="vector">&gt;NAME</text>
+<text x="-7.62" y="15.875" size="1.778" layer="95">&gt;NAME</text>
 <text x="-7.62" y="-17.78" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="G1" x="-12.7" y="-10.16" length="middle" direction="in" function="dot"/>
 <pin name="A1" x="-12.7" y="12.7" length="middle" direction="in"/>
@@ -9023,6 +9023,30 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <rectangle x1="-1.4" y1="-1.6" x2="-1.1" y2="1.6" layer="51"/>
 <rectangle x1="1.1" y1="-1.6" x2="1.4" y2="1.6" layer="51" rot="R180"/>
 </package>
+<package name="C1808">
+<description>&lt;b&gt;CAPACITOR&lt;/b&gt;&lt;p&gt;
+Source: AVX .. aphvc.pdf</description>
+<wire x1="-1.4732" y1="0.9502" x2="1.4732" y2="0.9502" width="0.1016" layer="51"/>
+<wire x1="-1.4478" y1="-0.9502" x2="1.4732" y2="-0.9502" width="0.1016" layer="51"/>
+<smd name="1" x="-1.95" y="0" dx="1.6" dy="2.2" layer="1"/>
+<smd name="2" x="1.95" y="0" dx="1.6" dy="2.2" layer="1"/>
+<text x="-2.233" y="1.827" size="1.27" layer="25">&gt;NAME</text>
+<text x="-2.233" y="-2.842" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-2.275" y1="-1.015" x2="-1.225" y2="1.015" layer="51"/>
+<rectangle x1="1.225" y1="-1.015" x2="2.275" y2="1.015" layer="51"/>
+</package>
+<package name="C3640">
+<description>&lt;b&gt;CAPACITOR&lt;/b&gt;&lt;p&gt;
+Source: AVX .. aphvc.pdf</description>
+<wire x1="-3.8322" y1="5.0496" x2="3.8322" y2="5.0496" width="0.1016" layer="51"/>
+<wire x1="-3.8322" y1="-5.0496" x2="3.8322" y2="-5.0496" width="0.1016" layer="51"/>
+<smd name="1" x="-4.267" y="0" dx="2.6" dy="10.7" layer="1"/>
+<smd name="2" x="4.267" y="0" dx="2.6" dy="10.7" layer="1"/>
+<text x="-4.647" y="6.465" size="1.27" layer="25">&gt;NAME</text>
+<text x="-4.647" y="-7.255" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-4.57" y1="-5.1" x2="-3.05" y2="5.1" layer="51"/>
+<rectangle x1="3.05" y1="-5.1" x2="4.5688" y2="5.1" layer="51"/>
+</package>
 </packages>
 <symbols>
 <symbol name="R-EU">
@@ -9750,6 +9774,24 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 </technologies>
 </device>
 <device name="C0201" package="C0201">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="C1808" package="C1808">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="C3640" package="C3640">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
@@ -12145,14 +12187,14 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <wire x1="0" y1="22.86" x2="101.6" y2="22.86" width="0.1016" layer="94"/>
 <wire x1="0" y1="22.86" x2="0" y2="35.56" width="0.1016" layer="94"/>
 <wire x1="101.6" y1="22.86" x2="101.6" y2="15.24" width="0.1016" layer="94"/>
-<text x="1.27" y="1.27" size="2.54" layer="94" font="vector">Date:</text>
-<text x="12.7" y="1.27" size="2.54" layer="94" font="vector">&gt;LAST_DATE_TIME</text>
-<text x="72.39" y="1.27" size="2.54" layer="94" font="vector">Sheet:</text>
-<text x="86.36" y="1.27" size="2.54" layer="94" font="vector">&gt;SHEET</text>
-<text x="88.9" y="11.43" size="2.54" layer="94" font="vector">REV:</text>
-<text x="1.27" y="19.05" size="2.54" layer="94" font="vector">TITLE:</text>
-<text x="1.27" y="11.43" size="2.54" layer="94" font="vector">Document Number:</text>
-<text x="17.78" y="19.05" size="2.54" layer="94" font="vector">&gt;DRAWING_NAME</text>
+<text x="1.27" y="1.27" size="2.54" layer="94">Date:</text>
+<text x="12.7" y="1.27" size="2.54" layer="94">&gt;LAST_DATE_TIME</text>
+<text x="72.39" y="1.27" size="2.54" layer="94">Sheet:</text>
+<text x="86.36" y="1.27" size="2.54" layer="94">&gt;SHEET</text>
+<text x="88.9" y="11.43" size="2.54" layer="94">REV:</text>
+<text x="1.27" y="19.05" size="2.54" layer="94">TITLE:</text>
+<text x="1.27" y="11.43" size="2.54" layer="94">Document Number:</text>
+<text x="17.78" y="19.05" size="2.54" layer="94">&gt;DRAWING_NAME</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -12235,7 +12277,12 @@ DIN A3, landscape with extra doc field</description>
 <connect gate="G$1" pin="VCC" pad="8"/>
 </connects>
 <technologies>
-<technology name=""/>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="MAX1232CPA" constant="no"/>
+<attribute name="OC_FARNELL" value="9723757" constant="no"/>
+<attribute name="OC_NEWARK" value="34C3766" constant="no"/>
+</technology>
 </technologies>
 </device>
 </devices>
@@ -12372,7 +12419,12 @@ DIN A3, landscape with extra doc field</description>
 <connect gate="G$1" pin="VCC" pad="8"/>
 </connects>
 <technologies>
-<technology name=""/>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OC_FARNELL" value="unknown" constant="no"/>
+<attribute name="OC_NEWARK" value="unknown" constant="no"/>
+</technology>
 </technologies>
 </device>
 <device name="14" package="DIL14S">
@@ -12383,7 +12435,12 @@ DIN A3, landscape with extra doc field</description>
 <connect gate="G$1" pin="VCC" pad="14"/>
 </connects>
 <technologies>
-<technology name=""/>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OC_FARNELL" value="unknown" constant="no"/>
+<attribute name="OC_NEWARK" value="unknown" constant="no"/>
+</technology>
 </technologies>
 </device>
 </devices>
@@ -12494,7 +12551,12 @@ DIN A3, landscape with extra doc field</description>
 <connect gate="1" pin="S1" pad="2"/>
 </connects>
 <technologies>
-<technology name=""/>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="B3F-1000" constant="no"/>
+<attribute name="OC_FARNELL" value="176432" constant="no"/>
+<attribute name="OC_NEWARK" value="36M3542" constant="no"/>
+</technology>
 </technologies>
 </device>
 </devices>
@@ -14179,8 +14241,8 @@ Source: www.kingbright.com</description>
 <wire x1="-0.762" y1="-1.27" x2="0.127" y2="-1.27" width="0.1524" layer="94"/>
 <wire x1="-3.937" y1="1.27" x2="-3.048" y2="1.27" width="0.1524" layer="94"/>
 <wire x1="-3.048" y1="1.27" x2="-1.778" y2="1.27" width="0.1524" layer="94"/>
-<text x="1.27" y="3.175" size="1.778" layer="95" font="vector">&gt;NAME</text>
-<text x="1.27" y="-5.08" size="1.778" layer="96" font="vector">&gt;VALUE</text>
+<text x="1.27" y="3.175" size="1.778" layer="95">&gt;NAME</text>
+<text x="1.27" y="-5.08" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="I" x="-10.16" y="0" visible="pad" length="middle" direction="in"/>
 <pin name="O" x="10.16" y="0" visible="pad" length="middle" direction="out" function="dot" rot="R180"/>
 </symbol>
@@ -14740,20 +14802,12 @@ Source: www.kingbright.com</description>
 <wire x1="-8.001" y1="44.9326" x2="-7.366" y2="50.0126" width="0.1524" layer="47"/>
 <wire x1="-8.636" y1="50.0126" x2="-7.366" y2="50.0126" width="0.1524" layer="47"/>
 <wire x1="-7.366" y1="50.0126" x2="-2.286" y2="50.0126" width="0.1524" layer="47"/>
-<wire x1="7.239" y1="50.6476" x2="-0.381" y2="50.6476" width="1.27" layer="16"/>
-<wire x1="-0.381" y1="43.0276" x2="-0.381" y2="50.6476" width="1.27" layer="16"/>
-<wire x1="7.239" y1="50.6476" x2="-0.381" y2="50.6476" width="1.27" layer="1"/>
-<wire x1="-0.381" y1="43.0276" x2="-0.381" y2="50.6476" width="1.27" layer="1"/>
 <wire x1="0.254" y1="42.3926" x2="0.254" y2="50.0126" width="0.1524" layer="47"/>
 <wire x1="0.254" y1="50.0126" x2="7.874" y2="50.0126" width="0.1524" layer="47"/>
 <wire x1="0.254" y1="42.3926" x2="0.254" y2="50.0126" width="0.1524" layer="30"/>
 <wire x1="0.254" y1="50.0126" x2="7.874" y2="50.0126" width="0.1524" layer="30"/>
 <wire x1="0.254" y1="42.3926" x2="0.254" y2="50.0126" width="0.1524" layer="29"/>
 <wire x1="7.874" y1="50.0126" x2="0.254" y2="50.0126" width="0.1524" layer="29"/>
-<wire x1="160.909" y1="43.0276" x2="160.909" y2="50.6476" width="1.27" layer="16"/>
-<wire x1="153.289" y1="50.6476" x2="160.909" y2="50.6476" width="1.27" layer="16"/>
-<wire x1="160.909" y1="43.0276" x2="160.909" y2="50.6476" width="1.27" layer="1"/>
-<wire x1="153.289" y1="50.6476" x2="160.909" y2="50.6476" width="1.27" layer="1"/>
 <wire x1="152.654" y1="50.0126" x2="160.274" y2="50.0126" width="0.1524" layer="47"/>
 <wire x1="160.274" y1="50.0126" x2="160.274" y2="42.3926" width="0.1524" layer="47"/>
 <wire x1="152.654" y1="50.0126" x2="160.274" y2="50.0126" width="0.1524" layer="30"/>
@@ -14777,20 +14831,12 @@ Source: www.kingbright.com</description>
 <wire x1="155.194" y1="-56.9976" x2="160.274" y2="-57.6326" width="0.1524" layer="47"/>
 <wire x1="160.274" y1="-58.9026" x2="160.274" y2="-57.6326" width="0.1524" layer="47"/>
 <wire x1="160.274" y1="-57.6326" x2="160.274" y2="-52.5526" width="0.1524" layer="47"/>
-<wire x1="153.289" y1="-50.6476" x2="160.909" y2="-50.6476" width="1.27" layer="16"/>
-<wire x1="160.909" y1="-43.0276" x2="160.909" y2="-50.6476" width="1.27" layer="16"/>
-<wire x1="153.289" y1="-50.6476" x2="160.909" y2="-50.6476" width="1.27" layer="1"/>
-<wire x1="160.909" y1="-43.0276" x2="160.909" y2="-50.6476" width="1.27" layer="1"/>
 <wire x1="160.274" y1="-42.3926" x2="160.274" y2="-50.0126" width="0.1524" layer="47"/>
 <wire x1="160.274" y1="-50.0126" x2="152.654" y2="-50.0126" width="0.1524" layer="47"/>
 <wire x1="160.274" y1="-42.3926" x2="160.274" y2="-50.0126" width="0.1524" layer="30"/>
 <wire x1="160.274" y1="-50.0126" x2="152.654" y2="-50.0126" width="0.1524" layer="30"/>
 <wire x1="160.274" y1="-42.3926" x2="160.274" y2="-50.0126" width="0.1524" layer="29"/>
 <wire x1="152.654" y1="-50.0126" x2="160.274" y2="-50.0126" width="0.1524" layer="29"/>
-<wire x1="-0.381" y1="-43.0276" x2="-0.381" y2="-50.6476" width="1.27" layer="16"/>
-<wire x1="7.239" y1="-50.6476" x2="-0.381" y2="-50.6476" width="1.27" layer="16"/>
-<wire x1="-0.381" y1="-43.0276" x2="-0.381" y2="-50.6476" width="1.27" layer="1"/>
-<wire x1="7.239" y1="-50.6476" x2="-0.381" y2="-50.6476" width="1.27" layer="1"/>
 <wire x1="7.874" y1="-50.0126" x2="0.254" y2="-50.0126" width="0.1524" layer="47"/>
 <wire x1="0.254" y1="-50.0126" x2="0.254" y2="-42.3926" width="0.1524" layer="47"/>
 <wire x1="7.874" y1="-50.0126" x2="0.254" y2="-50.0126" width="0.1524" layer="30"/>
