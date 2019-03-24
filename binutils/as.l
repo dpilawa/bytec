@@ -37,7 +37,7 @@ alpha [A-Za-z_]
 %%
 
 "nop"                           return NOP;
-"halt"                          return HALT;
+"fret"                          return FRET;
 "mov"                           return MOV;
 "movl"                          return MOVL;
 "ld"                            return LD;

@@ -152,7 +152,7 @@ const char usage[] =
 %type <ival> lit;
 %type <ival> litlabref;
 %type <ival> constref;
-%token HALT NOP MOV MOVL LD ST ADD SUB ADC SBC AND OR XOR SHL SHR POP PUSH LEA SEX
+%token FRET NOP MOV MOVL LD ST ADD SUB ADC SBC AND OR XOR SHL SHR POP PUSH LEA SEX
 %token CMP JMP JL JLE JG JGE JLU JLEU JGU JGEU JE JNE JZ JNZ JC JNC JN JNN JV JNV
 %token SYSCALL CALL RET IRET
 %token DB DW
@@ -277,7 +277,7 @@ expr:
 
 instr:
         NOP { emit8(0x00); } |
-        HALT { emit8(0x01); } |
+        FRET { emit8(0x01); } |
         MOV A ',' X { emit8(0x02); } |
         MOV A ',' Y { emit8(0x03); } |
         MOV A ',' SP { emit8(0x04); } |

@@ -24,7 +24,8 @@
 ; jump to main
     
     call _main
-	halt
+__halt:	
+	jmp __halt
 
 ; implement integer arithmetics
 
