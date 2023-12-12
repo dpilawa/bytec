@@ -37,7 +37,7 @@ op($01)
     16, *, MAR <- MDR
     17, *, HI(MDR) <- MEM(SP); DATA; SP++         // restore MDR
     18, *, LO(MDR) <- MEM(SP); DATA; SP++
-    19, *, MSW <- MEM(SP); DATA; SP++             // restore MSW
+    19, *, MSW <- MEM(SP); SUPERVISOR; DATA; SP++ // restore MSW
     20, *, FRET; fetch                            // fetch with FRET flag (to return to a specific instruction step)
 endop
 
@@ -305,7 +305,7 @@ op($23)
     12, *, HI(A) <- MEM(SP); DATA; SP++           // restore A
     13, *, LO(A) <- MEM(SP); DATA; SP++
     14, *, LO(MDR) <- MEM(SP); DATA; SP++         // restore MSW value (but not yet set MSW)
-    15, *, MSW <- MDR                             // restore machine status word (CPU mode, etc.)
+    15, *, MSW <- MDR; SUPERVISOR                 // restore machine status word (CPU mode, etc.)
     16, *, fetch
 endop
 
